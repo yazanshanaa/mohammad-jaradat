@@ -62,6 +62,22 @@ export interface CalculatorResult {
 /** System types that support battery storage */
 export const SYSTEMS_WITH_BATTERY = ['off-grid', 'hybrid', 'auto'] as const;
 
+/** Palestinian regions for location selection */
+export const LOCATIONS: { value: string; labelAr: string; labelEn: string }[] = [
+  { value: 'ramallah', labelAr: 'رام الله والبيرة', labelEn: 'Ramallah & Al-Bireh' },
+  { value: 'nablus', labelAr: 'نابلس', labelEn: 'Nablus' },
+  { value: 'hebron', labelAr: 'الخليل', labelEn: 'Hebron' },
+  { value: 'jenin', labelAr: 'جنين', labelEn: 'Jenin' },
+  { value: 'tulkarm', labelAr: 'طولكرم', labelEn: 'Tulkarm' },
+  { value: 'qalqilya', labelAr: 'قلقيلية', labelEn: 'Qalqilya' },
+  { value: 'salfit', labelAr: 'سلفيت', labelEn: 'Salfit' },
+  { value: 'jericho', labelAr: 'أريحا والأغوار', labelEn: 'Jericho & Jordan Valley' },
+  { value: 'bethlehem', labelAr: 'بيت لحم', labelEn: 'Bethlehem' },
+  { value: 'tubas', labelAr: 'طوباس', labelEn: 'Tubas' },
+  { value: 'jerusalem', labelAr: 'القدس', labelEn: 'Jerusalem' },
+  { value: 'other', labelAr: 'أخرى', labelEn: 'Other' },
+];
+
 const PANEL_AREA_M2 = 1.7;
 const CO2_PER_TREE_KG = 22;
 
