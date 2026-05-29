@@ -60,7 +60,7 @@ export interface CalculatorResult {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 /** System types that support battery storage */
-export const SYSTEMS_WITH_BATTERY = ['off-grid', 'hybrid', 'auto'] as const;
+export const SYSTEMS_WITH_BATTERY: ReadonlyArray<string> = ['off-grid', 'hybrid', 'auto'];
 
 /** Palestinian regions for location selection */
 export const LOCATIONS: { value: string; labelAr: string; labelEn: string }[] = [
