@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Sora:wght@300;400;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Brand Colors */
+  --solar-gold: #F5A623;
+  --solar-gold-dark: #D4881A;
+  --navy: #0A2540;
+  --navy-light: #0D3B6E;
+  --sky-blue: #1B9CFC;
+  --eco-green: #00B894;
+
+  /* Light Mode */
+  --bg-primary: #F0F4F8;
+  --bg-card: #FFFFFF;
+  --text-primary: #1A202C;
+  --text-secondary: #4A5568;
+  --border: #E2E8F0;
+
+  /* Shadcn compatibility */
+  --background: 240 10% 96%;
+  --foreground: 220 26% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 26% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 26% 14%;
+  --primary: 33 90% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 220 26% 14%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 220 26% 14%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border-color: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 33 90% 55%;
+  --radius: 0.5rem;
+
+  /* Transitions */
+  --transition: all 300ms ease;
+}
+
+.dark {
+  /* Dark Mode Brand */
+  --bg-primary: #0D1B2A;
+  --bg-card: #1A2740;
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --border: #2D3748;
+
+  /* Shadcn dark */
+  --background: 215 28% 12%;
+  --foreground: 210 40% 91%;
+  --card: 215 32% 16%;
+  --card-foreground: 210 40% 91%;
+  --popover: 215 32% 16%;
+  --popover-foreground: 210 40% 91%;
+  --primary: 33 90% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 215 25% 22%;
+  --secondary-foreground: 210 40% 91%;
+  --muted: 215 25% 22%;
+  --muted-foreground: 215 16% 56%;
+  --accent: 215 25% 22%;
+  --accent-foreground: 210 40% 91%;
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border-color: 215 25% 26%;
+  --input: 215 25% 26%;
+  --ring: 33 90% 55%;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-solar-gold: var(--solar-gold);
+  --color-navy: var(--navy);
+  --color-sky-blue: var(--sky-blue);
+  --color-eco-green: var(--eco-green);
+  --font-cairo: 'Cairo', sans-serif;
+  --font-sora: 'Sora', sans-serif;
+}
+
+* {
+  border-color: hsl(var(--border-color));
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+/* Arabic font */
+:lang(ar),
+[dir="rtl"] {
+  font-family: 'Cairo', sans-serif;
+}
+
+/* English font */
+:lang(en),
+[dir="ltr"] {
+  font-family: 'Sora', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--solar-gold);
+  border-radius: 3px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--solar-gold);
+  color: white;
+}
+
+/* Solar brand utilities */
+.solar-gradient {
+  background: linear-gradient(135deg, var(--solar-gold) 0%, var(--solar-gold-dark) 100%);
+}
+
+.navy-gradient {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, #0F4C81 100%);
+}
+
+.text-solar-gold {
+  color: var(--solar-gold);
+}
+
+.text-eco-green {
+  color: var(--eco-green);
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animated underline */
+.animated-underline {
+  position: relative;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--solar-gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+[dir="rtl"] .animated-underline::after {
+  transform-origin: left;
+}
+
+.animated-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Section spacing */
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+/* Card hover */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* RTL support for absolute positioned elements */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+.social-icon:hover { background-color: var(--solar-gold) !important; }

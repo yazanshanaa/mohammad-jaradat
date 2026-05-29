@@ -1,0 +1,380 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== AUTH & TENANCY =====
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(EDITOR)
+  
+  // Profile
+  companyName String?
+  companyLogo String?
+  phone       String?
+  address     String?
+
+  // Subscription
+  plan                 Plan      @default(FREE)
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  stripePriceId        String?
+  subscriptionStatus   String?   // active, past_due, canceled, incomplete
+  currentPeriodEnd     DateTime?
+
+  // Relations
+  solarSystems         SolarSystem[]
+  services             Service[]
+  projects             Project[]
+  blogPosts            BlogPost[]
+  leads                Lead[]
+  settings             Setting[]
+  calculatorConfig     CalculatorConfig?
+  media                Media[]
+  newsletterSubscribers NewsletterSubscriber[]
+  testimonials         Testimonial[]
+  tags                 Tag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum Plan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+// ===== SOLAR SYSTEMS =====
+model SolarSystem {
+  id            String          @id @default(cuid())
+  slug          String
+  titleAr       String
+  titleEn       String
+  descriptionAr String          @db.Text
+  descriptionEn String          @db.Text
+  type          SystemType
+  features      SystemFeature[]
+  specs         SystemSpec[]
+  minPower      Int
+  maxPower      Int
+  pricePerWatt  Float
+  coverImage    String
+  gallery       GalleryImage[]
+  isActive      Boolean         @default(true)
+  isFeatured    Boolean         @default(false)
+  sortOrder     Int             @default(0)
+  projects      Project[]
+  
+  userId        String
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@unique([slug, userId])
+}
+
+model SystemFeature {
+  id            String      @id @default(cuid())
+  textAr        String
+  textEn        String
+  solarSystem   SolarSystem @relation(fields: [solarSystemId], references: [id], onDelete: Cascade)
+  solarSystemId String
+}
+
+model SystemSpec {
+  id            String      @id @default(cuid())
+  labelAr       String
+  labelEn       String
+  valueAr       String
+  valueEn       String
+  solarSystem   SolarSystem @relation(fields: [solarSystemId], references: [id], onDelete: Cascade)
+  solarSystemId String
+}
+
+enum SystemType {
+  ON_GRID
+  OFF_GRID
+  HYBRID
+  AGRICULTURAL
+  COMMERCIAL
+}
+
+// ===== SERVICES =====
+model Service {
+  id            String   @id @default(cuid())
+  slug          String
+  titleAr       String
+  titleEn       String
+  descriptionAr String   @db.Text
+  descriptionEn String   @db.Text
+  shortDescAr   String
+  shortDescEn   String
+  icon          String
+  coverImage    String?
+  features      Json
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([slug, userId])
+}
+
+// ===== PROJECTS =====
+model Project {
+  id              String          @id @default(cuid())
+  slug            String
+  titleAr         String
+  titleEn         String
+  descriptionAr   String          @db.Text
+  descriptionEn   String          @db.Text
+  category        ProjectCategory
+  location        String
+  powerKw         Float
+  panelsCount     Int
+  completionDate  DateTime
+  clientName      String?
+  annualSavingIls Float
+  coverImage      String
+  beforeImage     String?
+  afterImage      String?
+  gallery         GalleryImage[]
+  isActive        Boolean         @default(true)
+  isFeatured      Boolean         @default(false)
+  system          SolarSystem?    @relation(fields: [systemId], references: [id])
+  systemId        String?
+
+  userId        String
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([slug, userId])
+}
+
+model GalleryImage {
+  id            String       @id @default(cuid())
+  url           String
+  altAr         String?
+  altEn         String?
+  solarSystem   SolarSystem? @relation(fields: [solarSystemId], references: [id], onDelete: Cascade)
+  solarSystemId String?
+  project       Project?     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId     String?
+}
+
+enum ProjectCategory {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+  AGRICULTURAL
+}
+
+// ===== BLOG =====
+model BlogPost {
+  id          String    @id @default(cuid())
+  slug        String
+  titleAr     String
+  titleEn     String
+  contentAr   String    @db.Text
+  contentEn   String    @db.Text
+  excerptAr   String
+  excerptEn   String
+  coverImage  String
+  category    String
+  tags        Tag[]
+  metaTitleAr String?
+  metaTitleEn String?
+  metaDescAr  String?
+  metaDescEn  String?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  readingTime Int
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([slug, userId])
+}
+
+model Tag {
+  id        String     @id @default(cuid())
+  nameAr    String
+  nameEn    String
+  slug      String
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  blogPosts BlogPost[]
+
+  @@unique([slug, userId])
+}
+
+// ===== TESTIMONIALS =====
+model Testimonial {
+  id         String   @id @default(cuid())
+  nameAr     String
+  nameEn     String
+  titleAr    String
+  titleEn    String
+  contentAr  String   @db.Text
+  contentEn  String   @db.Text
+  rating     Int
+  avatar     String?
+  location   String?
+  isActive   Boolean  @default(true)
+  isFeatured Boolean  @default(false)
+  sortOrder  Int      @default(0)
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ===== LEADS =====
+model Lead {
+  id               String     @id @default(cuid())
+  name             String
+  phone            String
+  email            String?
+  location         String
+  usageType        UsageType
+  monthlyBillIls   Float
+  monthlyKwh       Float?
+  notes            String?
+  status           LeadStatus @default(NEW)
+  source           String     @default("website")
+  assignedTo       String?
+  meterImage       String?
+  calculatorResult Json?
+
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+enum UsageType {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+  AGRICULTURAL
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUOTED
+  WON
+  LOST
+}
+
+// ===== SETTINGS =====
+model Setting {
+  id        String   @id @default(cuid())
+  key       String
+  value     String   @db.Text
+  type      String   @default("text")
+  group     String   @default("general")
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  updatedAt DateTime @updatedAt
+
+  @@unique([key, userId])
+}
+
+// ===== CALCULATOR CONFIG =====
+model CalculatorConfig {
+  id                    String   @id @default(cuid())
+  averageSunHoursPerDay Float    @default(5.5)
+  panelWatts            Int      @default(550)
+  inverterEfficiency    Float    @default(0.96)
+  systemLoss            Float    @default(0.14)
+  pricePerKwhIls        Float    @default(0.70)
+  pricePerWattInstalled Float    @default(4.50)
+  panelPriceIls         Int      @default(400)
+  inverterPriceBase     Int      @default(3500)
+  batteryPricePerKwh    Int      @default(2200)
+  systemLifeYears       Int      @default(25)
+  annualDegradation     Float    @default(0.005)
+  co2PerKwh             Float    @default(0.49)
+  systemPricing         Json?
+  batteryOptions        Json?
+  batteryVisible        Boolean  @default(true)
+
+  userId                String   @unique // One config per user
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  updatedAt             DateTime @updatedAt
+}
+
+// ===== NEWSLETTER =====
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String
+  isActive  Boolean  @default(true)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([email, userId])
+}
+
+// ===== RATE LIMIT (Global, but keyed by IP or user) =====
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+}
+
+// ===== MEDIA =====
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  publicId  String   @unique
+  filename  String
+  size      Int
+  width     Int?
+  height    Int?
+  format    String
+  folder    String   @default("general")
+  altAr     String?
+  altEn     String?
+  usedIn    Json?
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
