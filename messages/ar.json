@@ -10,7 +10,6 @@
     "services": "خدماتنا",
     "projects": "مشاريعنا",
     "calculator": "حاسبة الطاقة",
-    "blog": "المدونة",
     "about": "من نحن",
     "contact": "اتصل بنا",
     "getQuote": "احصل على عرض",
@@ -190,18 +189,6 @@
     "reason6Title": "حلول مخصصة",
     "reason6Desc": "كل نظام مصمم خصيصاً لاحتياجاتك"
   },
-  "blog": {
-    "title": "المدونة",
-    "subtitle": "آخر أخبار ومقالات الطاقة الشمسية",
-    "readMore": "اقرأ المقال كاملاً",
-    "viewAll": "عرض جميع المقالات",
-    "relatedPosts": "مقالات ذات صلة",
-    "share": "مشاركة",
-    "publishedOn": "نُشر في",
-    "minRead": "دقيقة قراءة",
-    "categories": "التصنيفات",
-    "tags": "الوسوم"
-  },
   "quote": {
     "title": "طلب عرض سعر",
     "subtitle": "أخبرنا عن احتياجاتك وسنعود إليك خلال 24 ساعة",
@@ -280,7 +267,6 @@
     "systems": "الأنظمة الشمسية",
     "services": "الخدمات",
     "projects": "المشاريع",
-    "blog": "المدونة",
     "testimonials": "شهادات العملاء",
     "leads": "طلبات العملاء",
     "calculatorConfig": "إعدادات الحاسبة",
@@ -291,7 +277,6 @@
     "totalLeads": "إجمالي الطلبات",
     "newLeads": "طلبات جديدة",
     "totalProjects": "المشاريع",
-    "totalPosts": "المقالات",
     "recentLeads": "آخر الطلبات",
     "leadsByType": "الطلبات حسب النوع",
     "leadsChart": "الطلبات الواردة",

@@ -33,14 +33,12 @@ model User {
   solarSystems         SolarSystem[]
   services             Service[]
   projects             Project[]
-  blogPosts            BlogPost[]
   leads                Lead[]
   settings             Setting[]
   calculatorConfig     CalculatorConfig?
   media                Media[]
   newsletterSubscribers NewsletterSubscriber[]
   testimonials         Testimonial[]
-  tags                 Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -188,50 +186,6 @@ enum ProjectCategory {
   COMMERCIAL
   INDUSTRIAL
   AGRICULTURAL
-}
-
-// ===== BLOG =====
-model BlogPost {
-  id          String    @id @default(cuid())
-  slug        String
-  titleAr     String
-  titleEn     String
-  contentAr   String    @db.Text
-  contentEn   String    @db.Text
-  excerptAr   String
-  excerptEn   String
-  coverImage  String
-  category    String
-  tags        Tag[]
-  metaTitleAr String?
-  metaTitleEn String?
-  metaDescAr  String?
-  metaDescEn  String?
-  isPublished Boolean   @default(false)
-  publishedAt DateTime?
-  readingTime Int
-
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@unique([slug, userId])
-}
-
-model Tag {
-  id        String     @id @default(cuid())
-  nameAr    String
-  nameEn    String
-  slug      String
-  
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  blogPosts BlogPost[]
-
-  @@unique([slug, userId])
 }
 
 // ===== TESTIMONIALS =====

@@ -8,6 +8,7 @@ import { ServicesSection } from '@/components/sections/ServicesSection';
 import { ProjectsGrid } from '@/components/sections/ProjectsGrid';
 import { TestimonialsSlider } from '@/components/sections/TestimonialsSlider';
 import { CTASection } from '@/components/sections/CTASection';
+import { getSettings } from '@/lib/settings';
 
 export default async function HomePage({
   params,
@@ -15,6 +16,8 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const settings = await getSettings();
+  const showProjects = settings['section_projects_visible'] !== 'false';
 
   return (
     <>
@@ -22,7 +25,7 @@ export default async function HomePage({
       <StatsCounter locale={locale} />
       <SystemsPreview locale={locale} />
       <ServicesSection locale={locale} />
-      <ProjectsGrid locale={locale} />
+      {showProjects && <ProjectsGrid locale={locale} />}
       <TestimonialsSlider locale={locale} />
       <CTASection locale={locale} />
     </>

@@ -75,19 +75,23 @@ export default function SystemsPage() {
   };
 
   const toggle = async (id: string, cur: boolean) => {
-    await fetch(`/api/admin/systems/${id}`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isActive: !cur }),
-    });
-    toast.success(!cur ? 'تم الإظهار' : 'تم الإخفاء'); load();
+    try {
+      const r = await fetch(`/api/admin/systems/${id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !cur }),
+      });
+      if (!r.ok) throw new Error();
+      toast.success(!cur ? 'تم الإظهار' : 'تم الإخفاء'); load();
+    } catch { toast.error('خطأ في تغيير الحالة'); }
   };
 
   const del = async () => {
     if (!deleteId) return; setDeleting(true);
     try {
-      await fetch(`/api/admin/systems/${deleteId}`, { method: 'DELETE' });
+      const r = await fetch(`/api/admin/systems/${deleteId}`, { method: 'DELETE' });
+      if (!r.ok) throw new Error();
       toast.success('تم الحذف'); setDeleteId(null); load();
-    } catch { toast.error('خطأ'); }
+    } catch { toast.error('خطأ في الحذف'); }
     finally { setDeleting(false); }
   };
 

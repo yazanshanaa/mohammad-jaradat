@@ -28,25 +28,6 @@ export const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-export const blogPostSchema = z.object({
-  slug: z.string().min(3),
-  titleAr: z.string().min(5),
-  titleEn: z.string(),
-  contentAr: z.string().min(10),
-  contentEn: z.string(),
-  excerptAr: z.string().max(300),
-  excerptEn: z.string().max(300),
-  coverImage: z.string(),
-  category: z.string(),
-  tags: z.array(z.string()).default([]),
-  readingTime: z.coerce.number().int().min(1).default(5),
-  isPublished: z.boolean().default(false),
-  metaTitleAr: z.string().optional().nullable(),
-  metaTitleEn: z.string().optional().nullable(),
-  metaDescAr: z.string().optional().nullable(),
-  metaDescEn: z.string().optional().nullable(),
-});
-
 export const solarSystemSchema = z.object({
   slug: z.string().min(3),
   titleAr: z.string().min(5),
@@ -107,7 +88,6 @@ export type ContactInput = z.infer<typeof contactSchema>;
 export type LeadInput = z.infer<typeof leadSchema>;
 export type NewsletterInput = z.infer<typeof newsletterSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
-export type BlogPostInput = z.infer<typeof blogPostSchema>;
 export type SolarSystemInput = z.infer<typeof solarSystemSchema>;
 export type ServiceInput = z.infer<typeof serviceSchema>;
 export type ProjectInput = z.infer<typeof projectSchema>;

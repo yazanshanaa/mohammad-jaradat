@@ -57,19 +57,23 @@ export default function ServicesPage() {
   };
 
   const toggle = async (id: string, cur: boolean) => {
-    await fetch(`/api/admin/services/${id}`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isActive: !cur }),
-    });
-    toast.success(!cur ? 'تم الاظهار' : 'تم الاخفاء'); load();
+    try {
+      const r = await fetch(`/api/admin/services/${id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !cur }),
+      });
+      if (!r.ok) throw new Error();
+      toast.success(!cur ? 'تم الاظهار' : 'تم الاخفاء'); load();
+    } catch { toast.error('خطا في تغيير الحالة'); }
   };
 
   const del = async () => {
     if (!deleteId) return; setDeleting(true);
     try {
-      await fetch(`/api/admin/services/${deleteId}`, { method: 'DELETE' });
+      const r = await fetch(`/api/admin/services/${deleteId}`, { method: 'DELETE' });
+      if (!r.ok) throw new Error();
       toast.success('تم الحذف'); setDeleteId(null); load();
-    } catch { toast.error('خطا'); }
+    } catch { toast.error('خطا في الحذف'); }
     finally { setDeleting(false); }
   };
 

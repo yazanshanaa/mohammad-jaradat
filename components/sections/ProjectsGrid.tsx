@@ -114,7 +114,7 @@ export async function ProjectsGrid({ locale }: ProjectsGridProps) {
                       >
                         <span style={{ color: 'var(--eco-green)', fontWeight: 700 }}>₪</span>
                         <span style={{ color: 'var(--text-secondary)' }}>
-                          {project.annualSavingIls.toLocaleString()}
+                          {(project.annualSavingIls ?? 0).toLocaleString()}
                         </span>
                       </div>
                     </div>

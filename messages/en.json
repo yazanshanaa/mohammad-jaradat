@@ -10,7 +10,6 @@
     "services": "Our Services",
     "projects": "Our Projects",
     "calculator": "Energy Calculator",
-    "blog": "Blog",
     "about": "About Us",
     "contact": "Contact",
     "getQuote": "Get Free Quote",
@@ -190,18 +189,6 @@
     "reason6Title": "Custom Solutions",
     "reason6Desc": "Every system is custom-designed for your specific needs"
   },
-  "blog": {
-    "title": "Blog",
-    "subtitle": "Latest solar energy news and articles",
-    "readMore": "Read Full Article",
-    "viewAll": "View All Articles",
-    "relatedPosts": "Related Articles",
-    "share": "Share",
-    "publishedOn": "Published on",
-    "minRead": "min read",
-    "categories": "Categories",
-    "tags": "Tags"
-  },
   "quote": {
     "title": "Request a Quote",
     "subtitle": "Tell us about your needs and we will get back to you within 24 hours",
@@ -280,7 +267,6 @@
     "systems": "Solar Systems",
     "services": "Services",
     "projects": "Projects",
-    "blog": "Blog",
     "testimonials": "Testimonials",
     "leads": "Client Requests",
     "calculatorConfig": "Calculator Settings",
@@ -291,7 +277,6 @@
     "totalLeads": "Total Leads",
     "newLeads": "New Leads",
     "totalProjects": "Projects",
-    "totalPosts": "Articles",
     "recentLeads": "Recent Leads",
     "leadsByType": "Leads by Type",
     "leadsChart": "Incoming Leads",

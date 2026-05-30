@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Sun, LayoutDashboard, Users, Zap, FolderOpen,
-  Wrench, FileText, Settings, Calculator, ChevronRight,
+  Wrench, Settings, Calculator, ChevronRight,
   Star, ImageIcon, Home, Phone, Search,
 } from 'lucide-react';
 
@@ -14,7 +14,6 @@ const navItems = [
   { href: '/dashboard/systems', labelAr: 'الأنظمة الشمسية', icon: Zap },
   { href: '/dashboard/projects', labelAr: 'المشاريع', icon: FolderOpen },
   { href: '/dashboard/services', labelAr: 'الخدمات', icon: Wrench },
-  { href: '/dashboard/blog', labelAr: 'المقالات', icon: FileText },
   { href: '/dashboard/testimonials', labelAr: 'التقييمات', icon: Star },
   { href: '/dashboard/media', labelAr: 'مكتبة الوسائط', icon: ImageIcon },
   { href: '/dashboard/calculator-config', labelAr: 'إعدادات الحاسبة', icon: Calculator },

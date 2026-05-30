@@ -32,7 +32,6 @@ export function Navbar() {
     { href: '/services', label: t('services') },
     { href: '/projects', label: t('projects') },
     { href: '/calculator', label: t('calculator') },
-    { href: '/blog', label: t('blog') },
     { href: '/contact', label: t('contact') },
   ];
 
@@ -113,7 +112,7 @@ export function Navbar() {
               <ThemeToggle />
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-md"
+                className="p-2.5 rounded-xl min-w-[44px] min-h-[44px] flex items-center justify-center"
                 style={{ color: scrolled ? 'var(--text-primary)' : 'white' }}
                 aria-label={t('menu')}
               >
@@ -134,18 +133,18 @@ export function Navbar() {
               className="lg:hidden overflow-hidden"
               style={{ backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border)' }}
             >
-              <div className="px-4 py-4 space-y-1">
+              <div className="px-3 py-3 space-y-0.5">
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    transition={{ delay: index * 0.04 }}
                   >
                     <Link
                       href={link.href}
                       className={cn(
-                        'block px-4 py-3 rounded-lg text-sm font-medium transition-all',
+                        'flex items-center px-4 py-3.5 rounded-xl text-base font-medium transition-all min-h-[52px]',
                         isActive(link.href) ? 'font-semibold' : ''
                       )}
                       style={{
@@ -157,10 +156,10 @@ export function Navbar() {
                     </Link>
                   </motion.div>
                 ))}
-                <div className="pt-2">
+                <div className="pt-2 pb-1 px-1">
                   <Button
                     asChild
-                    className="w-full font-semibold text-white"
+                    className="w-full font-semibold text-white h-12 text-base"
                     style={{ backgroundColor: 'var(--solar-gold)' }}
                   >
                     <a href="https://wa.me/970591234567" target="_blank" rel="noopener noreferrer">{t('getQuote')}</a>

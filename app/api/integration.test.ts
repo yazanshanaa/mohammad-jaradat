@@ -4,7 +4,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { POST as postLead, GET as getLeads } from './leads/route';
 import { POST as uploadFile } from './upload/route';
-import { POST as postBlog } from './admin/blog/route';
 import { prisma } from '@/lib/prisma';
 
 // 1. Setup Mocks
@@ -12,9 +11,8 @@ jest.mock('@/lib/prisma', () => ({
   prisma: {
     lead: { create: jest.fn(), findMany: jest.fn(), count: jest.fn() },
     media: { create: jest.fn() },
-    blogPost: { create: jest.fn() },
     rateLimit: { upsert: jest.fn() },
-    user: { findUnique: jest.fn() }, // Added user mock
+    user: { findUnique: jest.fn() },
   },
 }));
 
@@ -102,49 +100,5 @@ describe('API Integration Tests', () => {
     });
   });
 
-  describe('Admin Blog API (/api/admin/blog)', () => {
-    test('POST: requires valid session and role (Middleware-simulated)', async () => {
-      // Note: Actual middleware check happens before the route handler, 
-      // but we test the handler's internal validation too.
-      const validBlog = {
-        slug: 'new-technology-2026',
-        titleAr: 'تقنية شمسية جديدة ومبتكرة',
-        titleEn: 'New Innovative Solar Technology',
-        contentAr: 'هذا محتوى تجريبي طويل جداً يتجاوز العشرة أحرف المطلوبة للتحقق من الصحة',
-        contentEn: 'This is a long test content that exceeds the ten characters required for validation.',
-        excerptAr: 'مقتطف قصير للتدوينة الجديدة',
-        excerptEn: 'Short excerpt for the new blog post',
-        coverImage: 'https://example.com/blog-img.jpg',
-        category: 'solar',
-        readingTime: 5,
-        isPublished: true,
-        tags: ['solar', 'tech']
-      };
-
-      (prisma.blogPost.create as jest.Mock).mockResolvedValue({ id: 'blog_1', ...validBlog });
-
-      const req = new NextRequest('http://localhost/api/admin/blog', {
-        method: 'POST',
-        body: JSON.stringify(validBlog),
-      });
-
-      const res = await postBlog(req);
-      expect(res.status).toBe(200);
-      expect(prisma.blogPost.create).toHaveBeenCalled();
-    });
-
-    test('POST: fails if required fields are missing', async () => {
-      const incompleteBlog = { titleAr: 'No slug here' };
-      const req = new NextRequest('http://localhost/api/admin/blog', {
-        method: 'POST',
-        body: JSON.stringify(incompleteBlog),
-      });
-
-      const res = await postBlog(req);
-      const data = await res.json();
-      expect(res.status).toBe(400);
-      expect(data.error).toBe('Validation failed');
-    });
-  });
 
 });
