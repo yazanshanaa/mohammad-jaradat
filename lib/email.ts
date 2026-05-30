@@ -1,6 +1,12 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend(): Resend {
+  if (!_resend) {
+    _resend = new Resend(process.env.RESEND_API_KEY ?? 'placeholder');
+  }
+  return _resend;
+}
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'no-reply@solarpro.ps';
 const TO = process.env.CONTACT_EMAIL || 'info@solarpro.ps';
@@ -20,7 +26,7 @@ export async function sendContactEmail({
   message,
   subject,
 }: ContactEmailParams): Promise<void> {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: TO,
     subject: subject ?? `رسالة جديدة من ${name}`,
@@ -47,7 +53,7 @@ interface AutoReplyParams {
 }
 
 export async function sendAutoReply({ name, email }: AutoReplyParams): Promise<void> {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: 'شكراً لتواصلك مع SolarPro',
