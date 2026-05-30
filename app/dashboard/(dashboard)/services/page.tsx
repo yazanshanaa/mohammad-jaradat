@@ -139,15 +139,10 @@ export default function ServicesPage() {
               <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-700 text-2xl">x</button>
             </div>
             <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: '60vh' }}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5"><Label className="text-sm font-medium">العنوان (عربي)</Label><Input value={form.titleAr} onChange={e => f('titleAr', e.target.value)} /></div>
-                <div className="space-y-1.5"><Label className="text-sm font-medium">العنوان (انجليزي)</Label><Input value={form.titleEn} onChange={e => f('titleEn', e.target.value)} /></div>
-              </div>
+              <div className="space-y-1.5"><Label className="text-sm font-medium">العنوان</Label><Input value={form.titleAr} onChange={e => f('titleAr', e.target.value)} /></div>
               <div className="space-y-1.5"><Label className="text-sm font-medium">المعرف</Label><Input value={form.slug} onChange={e => f('slug', e.target.value)} dir="ltr" /></div>
-              <div className="space-y-1.5"><Label className="text-sm font-medium">وصف مختصر (عربي)</Label><Input value={form.shortDescAr} onChange={e => f('shortDescAr', e.target.value)} /></div>
-              <div className="space-y-1.5"><Label className="text-sm font-medium">وصف مختصر (انجليزي)</Label><Input value={form.shortDescEn} onChange={e => f('shortDescEn', e.target.value)} dir="ltr" /></div>
-              <div className="space-y-1.5"><Label className="text-sm font-medium">الوصف الكامل (عربي)</Label><textarea value={form.descriptionAr} onChange={e => f('descriptionAr', e.target.value)} rows={3} className="w-full px-3 py-2 text-sm rounded-md resize-none" style={{ border: '1px solid #e5e7eb' }} /></div>
-              <div className="space-y-1.5"><Label className="text-sm font-medium">الوصف الكامل (انجليزي)</Label><textarea value={form.descriptionEn} onChange={e => f('descriptionEn', e.target.value)} rows={3} className="w-full px-3 py-2 text-sm rounded-md resize-none" style={{ border: '1px solid #e5e7eb' }} dir="ltr" /></div>
+              <div className="space-y-1.5"><Label className="text-sm font-medium">وصف مختصر</Label><Input value={form.shortDescAr} onChange={e => f('shortDescAr', e.target.value)} /></div>
+              <div className="space-y-1.5"><Label className="text-sm font-medium">الوصف الكامل</Label><textarea value={form.descriptionAr} onChange={e => f('descriptionAr', e.target.value)} rows={3} className="w-full px-3 py-2 text-sm rounded-md resize-none" style={{ border: '1px solid #e5e7eb' }} /></div>
               <div className="space-y-1.5"><Label className="text-sm font-medium">ايقونة (اسم Lucide)</Label><Input value={form.icon} onChange={e => f('icon', e.target.value)} placeholder="Zap" dir="ltr" /></div>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={form.isActive} onChange={e => f('isActive', e.target.checked)} />نشط</label>

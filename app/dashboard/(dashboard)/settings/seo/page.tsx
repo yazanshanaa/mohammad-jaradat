@@ -9,25 +9,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 const KEYS = [
-  'meta_title_ar', 'meta_title_en',
-  'meta_description_ar', 'meta_description_en',
-  'og_image', 'keywords_ar', 'keywords_en',
-  'site_name_ar', 'site_name_en',
+  'meta_title_ar',
+  'meta_description_ar',
+  'og_image', 'keywords_ar',
+  'site_name_ar',
 ];
 
 const LABELS: Record<string, string> = {
-  meta_title_ar: 'عنوان الصفحة (عربي)',
-  meta_title_en: 'عنوان الصفحة (إنجليزي)',
-  meta_description_ar: 'وصف ميتا (عربي)',
-  meta_description_en: 'وصف ميتا (إنجليزي)',
+  meta_title_ar: 'عنوان الصفحة',
+  meta_description_ar: 'وصف ميتا',
   og_image: 'رابط صورة OG (Open Graph)',
-  keywords_ar: 'الكلمات المفتاحية (عربي، مفصولة بفاصلة)',
-  keywords_en: 'الكلمات المفتاحية (إنجليزي، مفصولة بفاصلة)',
-  site_name_ar: 'اسم الموقع (عربي)',
-  site_name_en: 'اسم الموقع (إنجليزي)',
+  keywords_ar: 'الكلمات المفتاحية (مفصولة بفاصلة)',
+  site_name_ar: 'اسم الموقع',
 };
 
-const TEXTAREA_KEYS = ['meta_description_ar', 'meta_description_en', 'keywords_ar', 'keywords_en'];
+const TEXTAREA_KEYS = ['meta_description_ar', 'keywords_ar'];
 
 export default function SeoSettingsPage() {
   const [values, setValues] = useState<Record<string, string>>({});
@@ -95,14 +91,13 @@ export default function SeoSettingsPage() {
                   onChange={e => setValues(p => ({ ...p, [key]: e.target.value }))}
                   rows={3}
                   className="text-sm"
-                  dir={key.endsWith('_en') ? 'ltr' : undefined}
                 />
               ) : (
                 <Input
                   value={values[key] || ''}
                   onChange={e => setValues(p => ({ ...p, [key]: e.target.value }))}
                   className="h-9 text-sm"
-                  dir={key.endsWith('_en') || key === 'og_image' ? 'ltr' : undefined}
+                  dir={key === 'og_image' ? 'ltr' : undefined}
                   placeholder={key === 'og_image' ? 'https://...' : undefined}
                 />
               )}

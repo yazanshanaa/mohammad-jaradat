@@ -97,7 +97,7 @@ export default function SystemsPage() {
 
   const f = (k: string, v: any) => setForm((p: any) => ({ ...p, [k]: v }));
 
-  const addFeature = () => setForm((p: any) => ({ ...p, features: [...(p.features || []), { ar: '', en: '' }] }));
+  const addFeature = () => setForm((p: any) => ({ ...p, features: [...(p.features || []), { ar: '' }] }));
   const updateFeature = (i: number, lang: 'ar' | 'en', val: string) =>
     setForm((p: any) => {
       const features = [...(p.features || [])];
@@ -200,15 +200,9 @@ export default function SystemsPage() {
             </div>
 
             <div className="p-6 space-y-5 overflow-y-auto" style={{ maxHeight: '70vh' }}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium">العنوان (عربي) *</Label>
-                  <Input value={form.titleAr} onChange={e => f('titleAr', e.target.value)} placeholder="نظام متصل بالشبكة" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium">العنوان (إنجليزي)</Label>
-                  <Input value={form.titleEn} onChange={e => f('titleEn', e.target.value)} placeholder="On-Grid System" />
-                </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">العنوان *</Label>
+                <Input value={form.titleAr} onChange={e => f('titleAr', e.target.value)} placeholder="نظام متصل بالشبكة" />
               </div>
 
               <div className="space-y-1.5">
@@ -230,13 +224,8 @@ export default function SystemsPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium">الوصف (عربي)</Label>
+                <Label className="text-sm font-medium">الوصف</Label>
                 <textarea value={form.descriptionAr} onChange={e => f('descriptionAr', e.target.value)} rows={3} className="w-full px-3 py-2 text-sm rounded-md resize-none" style={{ border: '1px solid #e5e7eb' }} />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-sm font-medium">الوصف (إنجليزي)</Label>
-                <textarea value={form.descriptionEn} onChange={e => f('descriptionEn', e.target.value)} rows={3} className="w-full px-3 py-2 text-sm rounded-md resize-none" style={{ border: '1px solid #e5e7eb' }} />
               </div>
 
               <div className="space-y-1.5">
@@ -259,8 +248,7 @@ export default function SystemsPage() {
                 <div className="space-y-2">
                   {(form.features || []).map((feat: any, i: number) => (
                     <div key={i} className="flex items-center gap-2 p-2 rounded-lg" style={{ backgroundColor: '#f9fafb' }}>
-                      <Input value={feat.ar} onChange={e => updateFeature(i, 'ar', e.target.value)} placeholder="الميزة بالعربي" className="h-8 text-xs flex-1" />
-                      <Input value={feat.en} onChange={e => updateFeature(i, 'en', e.target.value)} placeholder="Feature in English" className="h-8 text-xs flex-1" dir="ltr" />
+                      <Input value={feat.ar} onChange={e => updateFeature(i, 'ar', e.target.value)} placeholder="اكتب الميزة" className="h-8 text-xs flex-1" />
                       <button onClick={() => removeFeature(i)} className="text-red-400 hover:text-red-600 shrink-0"><X className="h-4 w-4" /></button>
                     </div>
                   ))}

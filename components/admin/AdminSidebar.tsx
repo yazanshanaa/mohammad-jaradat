@@ -3,14 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Sun, LayoutDashboard, Users, Zap, FolderOpen,
+  Sun, LayoutDashboard, Zap, FolderOpen,
   Wrench, Settings, Calculator, ChevronRight,
   Star, ImageIcon, Home, Phone, Search,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard/dashboard', labelAr: 'لوحة التحكم', icon: LayoutDashboard },
-  { href: '/dashboard/leads', labelAr: 'العملاء المحتملون', icon: Users },
   { href: '/dashboard/systems', labelAr: 'الأنظمة الشمسية', icon: Zap },
   { href: '/dashboard/projects', labelAr: 'المشاريع', icon: FolderOpen },
   { href: '/dashboard/services', labelAr: 'الخدمات', icon: Wrench },

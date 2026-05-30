@@ -157,50 +157,25 @@ export default function TestimonialsPage() {
             </div>
 
             <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: '70vh' }}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium">الاسم (عربي) *</Label>
-                  <Input value={form.nameAr} onChange={e => f('nameAr', e.target.value)} placeholder="أحمد محمد" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium">الاسم (إنجليزي)</Label>
-                  <Input value={form.nameEn} onChange={e => f('nameEn', e.target.value)} placeholder="Ahmad Mohammad" dir="ltr" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium">المسمى (عربي)</Label>
-                  <Input value={form.titleAr} onChange={e => f('titleAr', e.target.value)} placeholder="صاحب مشروع" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium">المسمى (إنجليزي)</Label>
-                  <Input value={form.titleEn} onChange={e => f('titleEn', e.target.value)} placeholder="Business Owner" dir="ltr" />
-                </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">الاسم *</Label>
+                <Input value={form.nameAr} onChange={e => f('nameAr', e.target.value)} placeholder="أحمد محمد" />
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium">المحتوى (عربي)</Label>
+                <Label className="text-sm font-medium">المسمى الوظيفي</Label>
+                <Input value={form.titleAr} onChange={e => f('titleAr', e.target.value)} placeholder="صاحب مشروع" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium">رأي العميل</Label>
                 <textarea
                   value={form.contentAr}
                   onChange={e => f('contentAr', e.target.value)}
                   rows={3}
                   className="w-full px-3 py-2 text-sm rounded-md resize-none"
                   style={{ border: '1px solid #e5e7eb' }}
-                  placeholder="رأي العميل بالعربية..."
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-sm font-medium">المحتوى (إنجليزي)</Label>
-                <textarea
-                  value={form.contentEn}
-                  onChange={e => f('contentEn', e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 text-sm rounded-md resize-none"
-                  style={{ border: '1px solid #e5e7eb' }}
-                  dir="ltr"
-                  placeholder="Customer feedback in English..."
+                  placeholder="اكتب رأي العميل هنا..."
                 />
               </div>
 

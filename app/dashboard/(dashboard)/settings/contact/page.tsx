@@ -10,8 +10,8 @@ import { toast } from 'sonner';
 
 const KEYS = [
   'phone', 'whatsapp', 'email',
-  'address_ar', 'address_en',
-  'working_hours_ar', 'working_hours_en',
+  'address_ar',
+  'working_hours_ar',
   'maps_embed_url',
 ];
 
@@ -19,14 +19,12 @@ const LABELS: Record<string, string> = {
   phone: 'رقم الهاتف',
   whatsapp: 'رقم الواتساب (بدون +)',
   email: 'البريد الإلكتروني',
-  address_ar: 'العنوان (عربي)',
-  address_en: 'العنوان (إنجليزي)',
-  working_hours_ar: 'ساعات العمل (عربي)',
-  working_hours_en: 'ساعات العمل (إنجليزي)',
+  address_ar: 'العنوان',
+  working_hours_ar: 'ساعات العمل',
   maps_embed_url: 'رابط خرائط Google (embed)',
 };
 
-const TEXTAREA_KEYS = ['address_ar', 'address_en', 'maps_embed_url'];
+const TEXTAREA_KEYS = ['address_ar', 'maps_embed_url'];
 
 export default function ContactSettingsPage() {
   const [values, setValues] = useState<Record<string, string>>({});

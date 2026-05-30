@@ -100,6 +100,28 @@ export async function PUT(
   }
 }
 
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const tenant = await getTenant();
+  if (tenant instanceof NextResponse) return tenant;
+  const { userId, user } = tenant as TenantContext;
+  const { id } = await params;
+  try {
+    const body = await req.json();
+    if (user.role !== 'SUPER_ADMIN') {
+      const existing = await prisma.project.findFirst({ where: { id, userId } });
+      if (!existing) return NextResponse.json({ error: 'Not found or unauthorized' }, { status: 404 });
+    }
+    const project = await prisma.project.update({ where: { id }, data: body });
+    return NextResponse.json(project);
+  } catch (error) {
+    console.error('[PROJECT_PATCH]', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
