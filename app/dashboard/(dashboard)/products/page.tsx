@@ -30,8 +30,12 @@ export default function ProductsPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    try { setProducts(await (await fetch('/api/admin/products')).json()); }
-    catch { toast.error('خطأ في التحميل'); }
+    try {
+      const res = await fetch('/api/admin/products');
+      const data = await res.json();
+      setProducts(Array.isArray(data) ? data : []);
+      if (!res.ok) toast.error(data?.error || 'خطأ في التحميل');
+    } catch { toast.error('خطأ في الاتصال'); }
     finally { setLoading(false); }
   }, []);
 

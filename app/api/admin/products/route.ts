@@ -32,7 +32,11 @@ export async function GET() {
       include: { _count: { select: { orderItems: true } } },
     });
     return NextResponse.json(products);
-  } catch (error) {
+  } catch (error: any) {
+    // الجدول غير موجود بعد — أرجع مصفوفة فارغة بدل خطأ 500
+    if (error?.code === 'P2021' || error?.code === 'P1001' || error?.message?.includes('does not exist')) {
+      return NextResponse.json([]);
+    }
     console.error('[ADMIN_PRODUCTS_GET]', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
