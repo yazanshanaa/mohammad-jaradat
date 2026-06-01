@@ -3,17 +3,19 @@ import { prisma } from '@/lib/prisma';
 const DEFAULTS: Record<string, string> = {
   phone: '+970591234567',
   whatsapp: '970591234567',
-  email: 'info@solarpro.ps',
-  address_ar: 'رام الله، فلسطين',
-  address_en: 'Ramallah, Palestine',
+  email: 'info@afaq.ps',
+  address_ar: 'فلسطين',
+  address_en: 'Palestine',
   working_hours_ar: 'الأحد - الخميس: 8:00 - 17:00',
   working_hours_en: 'Sun - Thu: 8:00 AM - 5:00 PM',
-  facebook: 'https://facebook.com/solarpro.ps',
-  instagram: 'https://instagram.com/solarpro.ps',
-  youtube: 'https://youtube.com/@solarpro',
+  facebook: '',
+  instagram: '',
+  tiktok: '',
+  youtube: '',
   linkedin: '',
-  site_name_ar: 'سولار برو',
-  site_name_en: 'SolarPro',
+  location_url: '',
+  site_name_ar: 'افاق',
+  site_name_en: 'AFAQ',
 };
 
 export async function getSettings(): Promise<Record<string, string>> {

@@ -65,7 +65,7 @@ export function Navbar() {
                 className="text-xl font-black tracking-tight"
                 style={{ color: scrolled ? 'var(--text-primary)' : 'white' }}
               >
-                Solar<span style={{ color: 'var(--solar-gold)' }}>Pro</span>
+                AFAQ<span style={{ color: 'var(--solar-gold)' }}> افاق</span>
               </span>
             </Link>
 

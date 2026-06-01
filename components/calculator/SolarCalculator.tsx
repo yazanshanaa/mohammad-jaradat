@@ -48,7 +48,6 @@ const USAGE_TYPES: { value: UsageType; label: string; icon: string }[] = [
 ];
 
 const SYSTEM_TYPES: { value: SystemType; label: string; desc: string }[] = [
-  { value: 'auto', label: 'تلقائي (موصى به)', desc: 'اختيار تلقائي حسب احتياجك' },
   { value: 'on-grid', label: 'متصل بالشبكة', desc: 'الأقل تكلفة، لا يوجد بطاريات' },
   { value: 'off-grid', label: 'مستقل عن الشبكة', desc: 'يعمل بشكل مستقل بالكامل' },
   { value: 'hybrid', label: 'هجين', desc: 'شبكة + بطاريات احتياطية' },
@@ -71,7 +70,7 @@ export function SolarCalculator() {
   const [form, setForm] = useState<FormState>({
     monthlyBillIls: '',
     usageType: 'residential',
-    systemType: 'auto',
+    systemType: 'on-grid',
     wantBatteries: false,
     selectedBatteryOptionId: '',
     batteryQuantity: '1',
@@ -148,7 +147,7 @@ export function SolarCalculator() {
     setForm({
       monthlyBillIls: '',
       usageType: 'residential',
-      systemType: 'auto',
+      systemType: 'on-grid',
       wantBatteries: false,
       selectedBatteryOptionId: '',
       batteryQuantity: '1',
@@ -285,28 +284,36 @@ export function SolarCalculator() {
                   </h3>
 
                   {/* نوع النظام */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-3">
                     {SYSTEM_TYPES.map(s => (
                       <button
                         key={s.value}
                         type="button"
                         onClick={() => {
                           update('systemType', s.value);
-                          // إذا اختار on-grid أو تغيير للنظام غير الداعم للبطاريات
                           if (!SYSTEMS_WITH_BATTERY.includes(s.value)) {
                             update('wantBatteries', false);
                           }
                         }}
-                        className="p-3 rounded-xl text-sm transition-all text-start"
+                        className="p-4 rounded-xl text-sm transition-all text-center flex flex-col items-center gap-2"
                         style={{
                           backgroundColor: form.systemType === s.value ? 'rgba(245,166,35,0.12)' : 'var(--bg-primary)',
                           border: `2px solid ${form.systemType === s.value ? 'var(--solar-gold)' : 'var(--border)'}`,
+                          boxShadow: form.systemType === s.value ? '0 0 0 3px rgba(245,166,35,0.15)' : 'none',
                         }}
                       >
-                        <div className="font-semibold" style={{ color: form.systemType === s.value ? 'var(--solar-gold)' : 'var(--text-primary)' }}>
+                        <div
+                          className="w-9 h-9 rounded-full flex items-center justify-center text-base"
+                          style={{
+                            backgroundColor: form.systemType === s.value ? 'var(--solar-gold)' : 'var(--border)',
+                          }}
+                        >
+                          {s.value === 'on-grid' ? '⚡' : s.value === 'off-grid' ? '🔋' : '⚙️'}
+                        </div>
+                        <div className="font-semibold text-xs leading-tight" style={{ color: form.systemType === s.value ? 'var(--solar-gold)' : 'var(--text-primary)' }}>
                           {s.label}
                         </div>
-                        <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                        <div className="text-xs leading-tight hidden sm:block" style={{ color: 'var(--text-secondary)' }}>
                           {s.desc}
                         </div>
                       </button>

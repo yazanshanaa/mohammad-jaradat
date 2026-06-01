@@ -71,7 +71,7 @@ export default async function SystemsPage({ params }: Props) {
         {systems.length === 0 ? (
           <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
             <Zap className="h-16 w-16 mx-auto mb-4 opacity-30" style={{ color: 'var(--solar-gold)' }} />
-            <p>{locale === 'ar' ? 'لا توجد أنظمة حالياً — أضف قاعدة البيانات' : 'No systems yet — connect the database'}</p>
+            <p>{locale === 'ar' ? 'لا توجد أنظمة متاحة حالياً' : 'No systems available at the moment'}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

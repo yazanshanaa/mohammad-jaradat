@@ -1,19 +1,26 @@
 import Link from 'next/link';
 import { getSettings } from '@/lib/settings';
-import { Sun, Phone, Mail, MapPin, Clock, Facebook, Instagram, Youtube, Linkedin } from 'lucide-react';
+import { Sun, Phone, MapPin, Clock, Facebook, Instagram, Linkedin } from 'lucide-react';
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.02a8.16 8.16 0 004.77 1.52V7.09a4.85 4.85 0 01-1-.4z" />
+    </svg>
+  );
+}
 
 export async function Footer() {
   const settings = await getSettings();
 
   const phone = settings.phone || '+970591234567';
-  const email = settings.email || 'info@solarpro.ps';
-  const addressAr = settings.address_ar || 'رام الله، فلسطين';
+  const addressAr = settings.address_ar || 'فلسطين';
   const hoursAr = settings.working_hours_ar || 'الأحد - الخميس: 8:00 - 17:00';
 
   const socialLinks = [
     { icon: Facebook, href: settings.facebook, label: 'Facebook' },
     { icon: Instagram, href: settings.instagram, label: 'Instagram' },
-    { icon: Youtube, href: settings.youtube, label: 'YouTube' },
+    { isTikTok: true, href: settings.tiktok, label: 'TikTok' },
     { icon: Linkedin, href: settings.linkedin, label: 'LinkedIn' },
   ].filter(s => s.href);
 
@@ -35,7 +42,7 @@ export async function Footer() {
                 <Sun className="h-6 w-6 text-white" />
               </div>
               <span className="text-2xl font-black text-white">
-                Solar<span style={{ color: 'var(--solar-gold)' }}>Pro</span>
+                AFAQ<span style={{ color: 'var(--solar-gold)' }}> افاق</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
@@ -43,7 +50,7 @@ export async function Footer() {
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-3 flex-wrap">
-              {socialLinks.map(({ icon: Icon, href, label }) => (
+              {socialLinks.map(({ icon: Icon, isTikTok, href, label }) => (
                 <a
                   key={label}
                   href={href}
@@ -53,7 +60,11 @@ export async function Footer() {
                   className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 social-icon"
                   style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }}
                 >
-                  <Icon className="h-4 w-4" />
+                  {isTikTok ? (
+                    <TikTokIcon className="h-4 w-4" />
+                  ) : Icon ? (
+                    <Icon className="h-4 w-4" />
+                  ) : null}
                 </a>
               ))}
             </div>
@@ -73,18 +84,6 @@ export async function Footer() {
                     <Phone className="h-4 w-4" style={{ color: 'var(--solar-gold)' }} />
                   </div>
                   <span>{phone}</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${email}`}
-                  className="flex items-center gap-3 text-sm hover:text-white transition-colors"
-                  style={{ color: 'rgba(255,255,255,0.65)' }}
-                >
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(245,166,35,0.15)' }}>
-                    <Mail className="h-4 w-4" style={{ color: 'var(--solar-gold)' }} />
-                  </div>
-                  <span>{email}</span>
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
@@ -111,7 +110,7 @@ export async function Footer() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-center text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <p>© {new Date().getFullYear()} SolarPro. جميع الحقوق محفوظة.</p>
+            <p>© {new Date().getFullYear()} AFAQ افاق. جميع الحقوق محفوظة.</p>
           </div>
         </div>
       </div>
