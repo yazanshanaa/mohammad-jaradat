@@ -12,10 +12,11 @@ export default async function MarketingLayout({
   const showServices = settings['section_services_visible'] !== 'false';
   const showProjects = settings['section_projects_visible'] !== 'false';
   const showStore = settings['store_enabled'] !== 'false';
+  const whatsapp = settings['whatsapp'] || '970591234567';
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar showServices={showServices} showProjects={showProjects} showStore={showStore} />
+      <Navbar showServices={showServices} showProjects={showProjects} showStore={showStore} whatsapp={whatsapp} />
       <main className="flex-1">{children}</main>
       <Footer />
       <FloatingWhatsApp />

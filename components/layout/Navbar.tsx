@@ -16,9 +16,10 @@ interface NavbarProps {
   showServices?: boolean;
   showProjects?: boolean;
   showStore?: boolean;
+  whatsapp?: string;
 }
 
-export function Navbar({ showServices = true, showProjects = true, showStore = false }: NavbarProps) {
+export function Navbar({ showServices = true, showProjects = true, showStore = false, whatsapp = '970591234567' }: NavbarProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -113,7 +114,7 @@ export function Navbar({ showServices = true, showProjects = true, showStore = f
                 className="font-semibold text-white"
                 style={{ backgroundColor: 'var(--solar-gold)' }}
               >
-                <a href="https://wa.me/970591234567" target="_blank" rel="noopener noreferrer">{t('getQuote')}</a>
+                <a href="https://wa.me/{whatsapp.replace(/\D/g, '')}" target="_blank" rel="noopener noreferrer">{t('getQuote')}</a>
               </Button>
             </div>
 
@@ -173,7 +174,7 @@ export function Navbar({ showServices = true, showProjects = true, showStore = f
                     className="w-full font-semibold text-white h-12 text-base"
                     style={{ backgroundColor: 'var(--solar-gold)' }}
                   >
-                    <a href="https://wa.me/970591234567" target="_blank" rel="noopener noreferrer">{t('getQuote')}</a>
+                    <a href="https://wa.me/{whatsapp.replace(/\D/g, '')}" target="_blank" rel="noopener noreferrer">{t('getQuote')}</a>
                   </Button>
                 </div>
               </div>

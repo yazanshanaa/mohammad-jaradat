@@ -41,7 +41,7 @@ export function AdminSidebar() {
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(245,166,35,0.2)' }}>
           <Sun className="h-5 w-5" style={{ color: '#F5A623' }} />
         </div>
-        <span className="font-bold text-white text-lg">SolarPro</span>
+        <span className="font-bold text-white text-lg">AFAQ<span style={{ color: '#F5A623' }}> افاق</span></span>
       </div>
 
       {/* Navigation */}
@@ -70,7 +70,7 @@ export function AdminSidebar() {
 
       {/* Bottom */}
       <div className="px-6 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>SolarPro v1.0 © 2025</p>
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>AFAQ افاق © {new Date().getFullYear()}</p>
       </div>
     </aside>
   );

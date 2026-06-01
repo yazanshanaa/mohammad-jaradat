@@ -2,7 +2,7 @@ import { Toaster } from 'sonner';
 import '../globals.css';
 
 export const metadata = {
-  title: 'SolarPro Admin',
+  title: 'لوحة تحكم افاق',
 };
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {

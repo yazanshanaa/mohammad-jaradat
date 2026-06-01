@@ -1,19 +1,22 @@
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { Zap, FolderOpen, Mail, TrendingUp, Wrench } from 'lucide-react';
+import { Zap, FolderOpen, Mail, TrendingUp, Wrench, ShoppingBag, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 
 async function getStats() {
   try {
-    const [totalProjects, totalSystems, totalSubscribers, totalServices] = await Promise.all([
+    const [totalProjects, totalSystems, totalSubscribers, totalServices, totalProducts, totalOrders, pendingOrders] = await Promise.all([
       prisma.project.count({ where: { isActive: true } }),
       prisma.solarSystem.count({ where: { isActive: true } }),
       prisma.newsletterSubscriber.count({ where: { isActive: true } }),
       prisma.service.count({ where: { isActive: true } }),
+      prisma.product.count({ where: { isActive: true } }).catch(() => 0),
+      prisma.order.count().catch(() => 0),
+      prisma.order.count({ where: { status: 'PENDING' } }).catch(() => 0),
     ]);
-    return { totalProjects, totalSystems, totalSubscribers, totalServices };
+    return { totalProjects, totalSystems, totalSubscribers, totalServices, totalProducts, totalOrders, pendingOrders };
   } catch {
-    return { totalProjects: 0, totalSystems: 0, totalSubscribers: 0, totalServices: 0 };
+    return { totalProjects: 0, totalSystems: 0, totalSubscribers: 0, totalServices: 0, totalProducts: 0, totalOrders: 0, pendingOrders: 0 };
   }
 }
 
@@ -26,6 +29,8 @@ export default async function DashboardPage() {
     { label: 'الأنظمة الشمسية', value: stats.totalSystems, sub: 'نظام متاح', icon: Zap, color: '#F5A623', href: '/dashboard/systems' },
     { label: 'الخدمات النشطة', value: stats.totalServices, sub: 'خدمة مفعّلة', icon: Wrench, color: '#10B981', href: '/dashboard/services' },
     { label: 'مشتركو النشرة', value: stats.totalSubscribers, sub: 'مشترك نشط', icon: Mail, color: '#3B82F6', href: '/dashboard/settings' },
+    { label: 'منتجات المتجر', value: stats.totalProducts, sub: 'منتج نشط', icon: ShoppingBag, color: '#EC4899', href: '/dashboard/products' },
+    { label: 'الطلبات الكلية', value: stats.totalOrders, sub: `${stats.pendingOrders} بانتظار المراجعة`, icon: ClipboardList, color: '#F59E0B', href: '/dashboard/orders' },
   ];
 
   return (
@@ -64,6 +69,9 @@ export default async function DashboardPage() {
           { href: '/dashboard/systems', label: 'إدارة الأنظمة الشمسية', icon: Zap, color: '#F5A623' },
           { href: '/dashboard/projects', label: 'إضافة مشروع جديد', icon: FolderOpen, color: '#8B5CF6' },
           { href: '/dashboard/calculator-config', label: 'ضبط إعدادات الحاسبة', icon: TrendingUp, color: '#10B981' },
+          { href: '/dashboard/products', label: 'إدارة منتجات المتجر', icon: ShoppingBag, color: '#EC4899' },
+          { href: '/dashboard/orders', label: 'عرض طلبات المتجر', icon: ClipboardList, color: '#F59E0B' },
+          { href: '/dashboard/settings/store', label: 'إعدادات المتجر', icon: TrendingUp, color: '#06B6D4' },
         ].map(({ href, label, icon: Icon, color }) => (
           <Link
             key={href}
