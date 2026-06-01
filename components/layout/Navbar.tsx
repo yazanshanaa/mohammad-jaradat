@@ -8,14 +8,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
+import { CartButton } from '@/components/store/CartButton';
+import { CartDrawer } from '@/components/store/CartDrawer';
 import { cn } from '@/lib/utils';
 
 interface NavbarProps {
   showServices?: boolean;
   showProjects?: boolean;
+  showStore?: boolean;
 }
 
-export function Navbar({ showServices = true, showProjects = true }: NavbarProps) {
+export function Navbar({ showServices = true, showProjects = true, showStore = false }: NavbarProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +40,7 @@ export function Navbar({ showServices = true, showProjects = true }: NavbarProps
     ...(showServices ? [{ href: '/services', label: t('services') }] : []),
     ...(showProjects ? [{ href: '/projects', label: t('projects') }] : []),
     { href: '/calculator', label: t('calculator') },
+    ...(showStore ? [{ href: '/store', label: 'المتجر' }] : []),
     { href: '/contact', label: t('contact') },
   ];
 
@@ -102,6 +106,7 @@ export function Navbar({ showServices = true, showProjects = true }: NavbarProps
             {/* Right Side Controls */}
             <div className="hidden lg:flex items-center gap-2">
               <ThemeToggle />
+              {showStore && <CartButton />}
               <Button
                 asChild
                 size="sm"
@@ -115,6 +120,7 @@ export function Navbar({ showServices = true, showProjects = true }: NavbarProps
             {/* Mobile: Controls + Hamburger */}
             <div className="lg:hidden flex items-center gap-1">
               <ThemeToggle />
+              {showStore && <CartButton />}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2.5 rounded-xl min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -178,6 +184,9 @@ export function Navbar({ showServices = true, showProjects = true }: NavbarProps
 
       {/* Spacer */}
       <div className="h-16" />
+
+      {/* Cart Drawer */}
+      {showStore && <CartDrawer />}
     </>
   );
 }

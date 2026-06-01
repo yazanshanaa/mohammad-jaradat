@@ -39,6 +39,8 @@ model User {
   media                Media[]
   newsletterSubscribers NewsletterSubscriber[]
   testimonials         Testimonial[]
+  products             Product[]
+  orders               Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -303,6 +305,71 @@ model NewsletterSubscriber {
   createdAt DateTime @default(now())
 
   @@unique([email, userId])
+}
+
+// ===== STORE =====
+model Product {
+  id            String      @id @default(cuid())
+  slug          String
+  nameAr        String
+  descriptionAr String      @db.Text
+  price         Float
+  showPrice     Boolean     @default(true)
+  coverImage    String
+  images        String[]
+  category      String?
+  isActive      Boolean     @default(true)
+  isFeatured    Boolean     @default(false)
+  sortOrder     Int         @default(0)
+  stock         Int?
+  features      String[]
+
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([slug, userId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  customerName    String
+  customerPhone   String
+  customerAddress String
+  notes           String?
+  status          OrderStatus @default(PENDING)
+  totalAmount     Float
+  items           OrderItem[]
+
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id             String   @id @default(cuid())
+  quantity       Int
+  unitPrice      Float
+  productNameAr  String
+  product        Product  @relation(fields: [productId], references: [id])
+  productId      String
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
 
 // ===== RATE LIMIT (Global, but keyed by IP or user) =====

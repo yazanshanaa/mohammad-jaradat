@@ -6,6 +6,7 @@ import {
   Sun, LayoutDashboard, Zap, FolderOpen,
   Wrench, Settings, Calculator, ChevronRight,
   Star, ImageIcon, Home, Phone, Search,
+  ShoppingBag, ClipboardList, Store,
 } from 'lucide-react';
 
 const navItems = [
@@ -16,6 +17,10 @@ const navItems = [
   { href: '/dashboard/testimonials', labelAr: 'التقييمات', icon: Star },
   { href: '/dashboard/media', labelAr: 'مكتبة الوسائط', icon: ImageIcon },
   { href: '/dashboard/calculator-config', labelAr: 'إعدادات الحاسبة', icon: Calculator },
+  { href: '/dashboard/products', labelAr: 'المتجر', icon: Store, sub: true },
+  { href: '/dashboard/products', labelAr: 'المنتجات', icon: ShoppingBag, indent: true },
+  { href: '/dashboard/orders', labelAr: 'الطلبات', icon: ClipboardList, indent: true },
+  { href: '/dashboard/settings/store', labelAr: 'إعدادات المتجر', icon: Settings, indent: true },
   { href: '/dashboard/settings', labelAr: 'إعدادات الموقع', icon: Settings, sub: true },
   { href: '/dashboard/settings/homepage', labelAr: 'إعدادات الرئيسية', icon: Home, indent: true },
   { href: '/dashboard/settings/contact', labelAr: 'إعدادات التواصل', icon: Phone, indent: true },

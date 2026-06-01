@@ -11,10 +11,11 @@ export default async function MarketingLayout({
   const settings = await getSettings();
   const showServices = settings['section_services_visible'] !== 'false';
   const showProjects = settings['section_projects_visible'] !== 'false';
+  const showStore = settings['store_enabled'] !== 'false';
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar showServices={showServices} showProjects={showProjects} />
+      <Navbar showServices={showServices} showProjects={showProjects} showStore={showStore} />
       <main className="flex-1">{children}</main>
       <Footer />
       <FloatingWhatsApp />

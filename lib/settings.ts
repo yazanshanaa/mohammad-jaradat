@@ -18,6 +18,13 @@ const DEFAULTS: Record<string, string> = {
   site_name_en: 'AFAQ',
   section_services_visible: 'true',
   section_projects_visible: 'true',
+  // إعدادات المتجر
+  store_enabled: 'true',
+  store_show_price: 'true',
+  store_whatsapp: '',
+  store_currency: 'ILS',
+  store_name_ar: 'المتجر',
+  store_free_shipping_note: '',
 };
 
 export async function getSettings(): Promise<Record<string, string>> {
