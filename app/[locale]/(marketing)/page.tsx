@@ -17,6 +17,7 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const settings = await getSettings();
+  const showServices = settings['section_services_visible'] !== 'false';
   const showProjects = settings['section_projects_visible'] !== 'false';
 
   return (
@@ -24,7 +25,7 @@ export default async function HomePage({
       <HeroSection />
       <StatsCounter locale={locale} />
       <SystemsPreview locale={locale} />
-      <ServicesSection locale={locale} />
+      {showServices && <ServicesSection locale={locale} />}
       {showProjects && <ProjectsGrid locale={locale} />}
       <TestimonialsSlider locale={locale} />
       <CTASection locale={locale} />

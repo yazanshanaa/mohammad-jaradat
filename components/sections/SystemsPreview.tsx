@@ -51,15 +51,7 @@ export async function SystemsPreview({ locale }: SystemsPreviewProps) {
         />
 
         {systems.length === 0 ? (
-          <div
-            className="text-center py-12 rounded-2xl"
-            style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}
-          >
-            <Zap className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--solar-gold)' }} />
-            <p style={{ color: 'var(--text-secondary)' }}>
-              {locale === 'ar' ? 'قاعدة البيانات غير متصلة بعد — أضف بيانات في .env.local' : 'Database not connected yet — add credentials in .env.local'}
-            </p>
-          </div>
+          null
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             {systems.map((system) => {

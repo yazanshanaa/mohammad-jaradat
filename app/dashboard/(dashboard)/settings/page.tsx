@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Save, Loader2 } from 'lucide-react';
+import { Settings, Save, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,6 +46,12 @@ const GROUP_LABELS: Record<string, string> = {
   integrations: 'التكاملات',
 };
 
+const SECTION_TOGGLE_KEYS = ['section_services_visible', 'section_projects_visible'];
+const SECTION_LABELS: Record<string, { label: string; desc: string; icon: string }> = {
+  section_services_visible: { label: 'قسم الخدمات', desc: 'إظهار أو إخفاء قسم الخدمات من الموقع والقائمة', icon: '⚙️' },
+  section_projects_visible: { label: 'قسم المشاريع', desc: 'إظهار أو إخفاء قسم المشاريع من الموقع والقائمة', icon: '🏗️' },
+};
+
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Setting[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +60,18 @@ export default function SettingsPage() {
   useEffect(() => {
     fetch('/api/admin/settings')
       .then(r => r.json())
-      .then(data => setSettings(data || []))
+      .then((data: Setting[]) => {
+        const loaded = data || [];
+        // ضمان وجود إعدادات الأقسام حتى لو لم تكن في قاعدة البيانات بعد
+        const existingKeys = new Set(loaded.map(s => s.key));
+        const missing: Setting[] = [
+          { id: '', key: 'section_services_visible', value: 'true', type: 'text', group: 'sections' },
+          { id: '', key: 'section_projects_visible', value: 'true', type: 'text', group: 'sections' },
+          { id: '', key: 'tiktok', value: '', type: 'text', group: 'social' },
+          { id: '', key: 'location_url', value: '', type: 'text', group: 'contact' },
+        ].filter(s => !existingKeys.has(s.key));
+        setSettings([...loaded, ...missing]);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -62,6 +79,9 @@ export default function SettingsPage() {
   const update = (key: string, value: string) => {
     setSettings(prev => prev.map(s => s.key === key ? { ...s, value } : s));
   };
+
+  const getVal = (key: string) =>
+    settings.find(s => s.key === key)?.value ?? 'true';
 
   const handleSave = async () => {
     setSaving(true);
@@ -80,7 +100,10 @@ export default function SettingsPage() {
     }
   };
 
-  const grouped = settings.reduce<Record<string, Setting[]>>((acc, s) => {
+  // نستثني مفاتيح الأقسام من العرض العادي لأننا نعرضها كـ toggles
+  const regularSettings = settings.filter(s => !SECTION_TOGGLE_KEYS.includes(s.key));
+
+  const grouped = regularSettings.reduce<Record<string, Setting[]>>((acc, s) => {
     if (!acc[s.group]) acc[s.group] = [];
     acc[s.group].push(s);
     return acc;
@@ -103,6 +126,54 @@ export default function SettingsPage() {
         </Button>
       </div>
 
+      {/* إخفاء/إظهار أقسام الموقع */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4" style={{ border: '1px solid #e5e7eb' }}>
+        <div className="flex items-center gap-2 pb-3" style={{ borderBottom: '1px solid #f3f4f6' }}>
+          <Eye className="h-4 w-4 text-gray-400" />
+          <h2 className="font-bold text-gray-900">إظهار/إخفاء أقسام الموقع</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {SECTION_TOGGLE_KEYS.map(key => {
+            const isVisible = getVal(key) !== 'false';
+            const info = SECTION_LABELS[key];
+            return (
+              <div
+                key={key}
+                className="flex items-center justify-between p-4 rounded-xl transition-all"
+                style={{
+                  backgroundColor: isVisible ? '#f0fdf4' : '#fef2f2',
+                  border: `1px solid ${isVisible ? '#bbf7d0' : '#fecaca'}`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{info.icon}</span>
+                  <div>
+                    <div className="font-semibold text-sm text-gray-900">{info.label}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{info.desc}</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => update(key, isVisible ? 'false' : 'true')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                  style={{
+                    backgroundColor: isVisible ? '#22c55e' : '#ef4444',
+                    color: 'white',
+                  }}
+                >
+                  {isVisible ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                  {isVisible ? 'ظاهر' : 'مخفي'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-xs text-gray-400">
+          عند الإخفاء يختفي القسم من الصفحة الرئيسية وقائمة التنقل كاملاً
+        </p>
+      </div>
+
+      {/* الإعدادات العامة */}
       {Object.entries(grouped).map(([group, groupSettings]) => (
         <div key={group} className="bg-white rounded-2xl p-6 shadow-sm space-y-5" style={{ border: '1px solid #e5e7eb' }}>
           <div className="flex items-center gap-2 pb-3" style={{ borderBottom: '1px solid #f3f4f6' }}>
@@ -136,7 +207,7 @@ export default function SettingsPage() {
         </div>
       ))}
 
-      {settings.length === 0 && (
+      {regularSettings.length === 0 && (
         <div className="bg-white rounded-2xl p-16 text-center" style={{ border: '1px solid #e5e7eb' }}>
           <Settings className="h-12 w-12 mx-auto mb-3 text-gray-300" />
           <p className="text-gray-400">لا توجد إعدادات. تأكد من تشغيل seed البيانات.</p>

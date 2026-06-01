@@ -10,7 +10,12 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { cn } from '@/lib/utils';
 
-export function Navbar() {
+interface NavbarProps {
+  showServices?: boolean;
+  showProjects?: boolean;
+}
+
+export function Navbar({ showServices = true, showProjects = true }: NavbarProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -29,8 +34,8 @@ export function Navbar() {
   const navLinks = [
     { href: '/', label: t('home') },
     { href: '/systems', label: t('systems') },
-    { href: '/services', label: t('services') },
-    { href: '/projects', label: t('projects') },
+    ...(showServices ? [{ href: '/services', label: t('services') }] : []),
+    ...(showProjects ? [{ href: '/projects', label: t('projects') }] : []),
     { href: '/calculator', label: t('calculator') },
     { href: '/contact', label: t('contact') },
   ];

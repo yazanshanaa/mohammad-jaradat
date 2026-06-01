@@ -51,17 +51,7 @@ export async function ProjectsGrid({ locale }: ProjectsGridProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionTitle title={t('title')} subtitle={t('subtitle')} />
 
-        {projects.length === 0 ? (
-          <div
-            className="text-center py-12 rounded-2xl"
-            style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}
-          >
-            <Building className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--solar-gold)' }} />
-            <p style={{ color: 'var(--text-secondary)' }}>
-              سيتم عرض المشاريع بعد توصيل قاعدة البيانات
-            </p>
-          </div>
-        ) : (
+        {projects.length === 0 ? null : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             {projects.map((project) => {
               const color = categoryColors[project.category] || 'var(--solar-gold)';
@@ -129,14 +119,16 @@ export async function ProjectsGrid({ locale }: ProjectsGridProps) {
           </div>
         )}
 
-        <div className="text-center">
-          <Button asChild variant="outline" size="lg" className="font-semibold">
-            <Link href={`/${locale}/projects`}>
-              {t('viewAll')}
-              <ArrowLeft className="h-4 w-4 ms-2" />
-            </Link>
-          </Button>
-        </div>
+        {projects.length > 0 && (
+          <div className="text-center">
+            <Button asChild variant="outline" size="lg" className="font-semibold">
+              <Link href={`/${locale}/projects`}>
+                {t('viewAll')}
+                <ArrowLeft className="h-4 w-4 ms-2" />
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -16,6 +16,8 @@ const DEFAULTS: Record<string, string> = {
   location_url: '',
   site_name_ar: 'افاق',
   site_name_en: 'AFAQ',
+  section_services_visible: 'true',
+  section_projects_visible: 'true',
 };
 
 export async function getSettings(): Promise<Record<string, string>> {

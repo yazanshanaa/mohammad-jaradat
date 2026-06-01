@@ -9,7 +9,7 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   return {
-    title: locale === 'ar' ? 'حاسبة الطاقة الشمسية | SolarPro' : 'Solar Calculator | SolarPro',
+    title: locale === 'ar' ? 'حاسبة الطاقة الشمسية | AFAQ' : 'Solar Calculator | AFAQ',
     description: locale === 'ar'
       ? 'احسب حجم النظام الشمسي المثالي لمنزلك أو شركتك واكتشف وفرك المالي خلال 25 سنة'
       : 'Calculate the ideal solar system size for your home or business and discover your 25-year savings',
@@ -108,7 +108,28 @@ export default async function CalculatorPage({ params }: Props) {
 
       {/* Calculator */}
       <div className="section-padding" style={{ backgroundColor: 'var(--bg-primary)' }}>
-        <div className="max-w-3xl mx-auto px-4">
+        <div className="max-w-3xl mx-auto px-4 space-y-4">
+          {/* تنبيه الأسعار التقريبية */}
+          <div
+            className="flex items-start gap-3 p-4 rounded-2xl"
+            style={{
+              backgroundColor: 'rgba(245,166,35,0.08)',
+              border: '1px solid rgba(245,166,35,0.3)',
+            }}
+          >
+            <span className="text-xl leading-none mt-0.5">⚠️</span>
+            <div>
+              <p className="text-sm font-semibold mb-0.5" style={{ color: 'var(--solar-gold)' }}>
+                {isAr ? 'تنبيه: الأسعار تقديرية وليست نهائية' : 'Notice: Prices are estimates, not final'}
+              </p>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                {isAr
+                  ? 'النتائج الظاهرة محسوبة على أساس متوسطات عامة. السعر الفعلي يتحدد بعد المعاينة الميدانية والتواصل المباشر مع فريقنا.'
+                  : 'Results are calculated based on general averages. The actual price is determined after a site visit and direct contact with our team.'}
+              </p>
+            </div>
+          </div>
+
           <SolarCalculator />
         </div>
       </div>

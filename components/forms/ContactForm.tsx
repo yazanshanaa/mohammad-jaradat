@@ -74,18 +74,6 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <Label style={{ color: 'var(--text-primary)' }}>{t('email')}</Label>
-        <Input
-          {...register('email')}
-          placeholder={t('emailPlaceholder')}
-          type="email"
-          style={fieldStyle}
-          className="h-12"
-        />
-        {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
-      </div>
-
-      <div className="space-y-2">
         <Label style={{ color: 'var(--text-primary)' }}>{t('message')} *</Label>
         <Textarea
           {...register('message')}
