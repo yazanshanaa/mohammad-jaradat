@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { FolderOpen, Plus, Eye, Pencil, Trash2, RefreshCw, MapPin, Zap } from 'lucide-react';
+import { FolderOpen, Plus, Eye, EyeOff, Pencil, Trash2, RefreshCw, MapPin, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,6 +31,8 @@ export default function ProjectsPage() {
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [sectionVisible, setSectionVisible] = useState(true);
+  const [sectionSaving, setSectionSaving] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -40,6 +42,36 @@ export default function ProjectsPage() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    fetch('/api/admin/settings')
+      .then(r => r.json())
+      .then((data: { key: string; value: string }[]) => {
+        const s = (data || []).find(x => x.key === 'section_projects_visible');
+        if (s) setSectionVisible(s.value !== 'false');
+      })
+      .catch(() => {});
+  }, []);
+
+  const toggleSection = async () => {
+    const next = !sectionVisible;
+    setSectionVisible(next);
+    setSectionSaving(true);
+    try {
+      const r = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify([{ key: 'section_projects_visible', value: next ? 'true' : 'false' }]),
+      });
+      if (!r.ok) throw new Error();
+      toast.success(next ? 'تم إظهار قسم المشاريع في الموقع' : 'تم إخفاء قسم المشاريع من الموقع');
+    } catch {
+      setSectionVisible(!next);
+      toast.error('خطأ في الحفظ');
+    } finally {
+      setSectionSaving(false);
+    }
+  };
 
   const openAdd = () => { setForm(EMPTY); setEditId(null); setModal(true); };
   const openEdit = (p: any) => {
@@ -104,6 +136,33 @@ export default function ProjectsPage() {
           <Button onClick={openAdd} className="gap-2 text-white font-semibold" style={{ backgroundColor: '#8B5CF6' }}>
             <Plus className="h-4 w-4" />اضافة مشروع
           </Button>
+        </div>
+      </div>
+
+      {/* إظهار/إخفاء قسم المشاريع */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: '1px solid #e5e7eb' }}>
+        <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }}>
+          <div className="flex items-center gap-3">
+            {sectionVisible ? <Eye className="h-5 w-5 text-blue-500" /> : <EyeOff className="h-5 w-5 text-gray-400" />}
+            <div>
+              <div className="font-medium text-sm text-gray-900">قسم المشاريع في الموقع</div>
+              <div className="text-xs text-gray-500">
+                {sectionVisible ? 'ظاهر — يتم عرض قسم المشاريع في الصفحة الرئيسية' : 'مخفي — قسم المشاريع مخفي من الصفحة الرئيسية'}
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={toggleSection}
+            disabled={sectionSaving}
+            className="w-12 h-6 rounded-full transition-all relative flex-shrink-0"
+            style={{ backgroundColor: sectionVisible ? '#3B82F6' : '#D1D5DB', opacity: sectionSaving ? 0.6 : 1 }}
+          >
+            <div
+              className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300"
+              style={{ right: sectionVisible ? '4px' : '26px' }}
+            />
+          </button>
         </div>
       </div>
 

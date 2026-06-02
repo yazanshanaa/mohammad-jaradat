@@ -46,10 +46,11 @@ const GROUP_LABELS: Record<string, string> = {
   integrations: 'التكاملات',
 };
 
+// مفاتيح الأقسام تُستثنى من العرض العادي (كـ text inputs)
 const SECTION_TOGGLE_KEYS = ['section_services_visible', 'section_projects_visible'];
+// من يظهر كـ toggle في هذه الصفحة (المشاريع انتقلت لصفحة المشاريع)
 const SECTION_LABELS: Record<string, { label: string; desc: string; icon: string }> = {
   section_services_visible: { label: 'قسم الخدمات', desc: 'إظهار أو إخفاء قسم الخدمات من الموقع والقائمة', icon: '⚙️' },
-  section_projects_visible: { label: 'قسم المشاريع', desc: 'إظهار أو إخفاء قسم المشاريع من الموقع والقائمة', icon: '🏗️' },
 };
 
 export default function SettingsPage() {
@@ -67,6 +68,8 @@ export default function SettingsPage() {
         const missing: Setting[] = [
           { id: '', key: 'section_services_visible', value: 'true', type: 'text', group: 'sections' },
           { id: '', key: 'section_projects_visible', value: 'true', type: 'text', group: 'sections' },
+          { id: '', key: 'facebook', value: '', type: 'text', group: 'social' },
+          { id: '', key: 'instagram', value: '', type: 'text', group: 'social' },
           { id: '', key: 'tiktok', value: '', type: 'text', group: 'social' },
           { id: '', key: 'location_url', value: '', type: 'text', group: 'contact' },
         ].filter(s => !existingKeys.has(s.key));
@@ -133,7 +136,7 @@ export default function SettingsPage() {
           <h2 className="font-bold text-gray-900">إظهار/إخفاء أقسام الموقع</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {SECTION_TOGGLE_KEYS.map(key => {
+          {SECTION_TOGGLE_KEYS.filter(key => SECTION_LABELS[key]).map(key => {
             const isVisible = getVal(key) !== 'false';
             const info = SECTION_LABELS[key];
             return (

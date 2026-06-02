@@ -6,7 +6,7 @@ import {
   Sun, LayoutDashboard, Zap, FolderOpen,
   Wrench, Settings, Calculator, ChevronRight,
   Star, ImageIcon, Home, Phone, Search,
-  ShoppingBag, ClipboardList, Store,
+  ShoppingBag, ClipboardList, Store, Share2,
 } from 'lucide-react';
 
 const navItems = [
@@ -24,6 +24,7 @@ const navItems = [
   { href: '/dashboard/settings', labelAr: 'إعدادات الموقع', icon: Settings, sub: true },
   { href: '/dashboard/settings/homepage', labelAr: 'إعدادات الرئيسية', icon: Home, indent: true },
   { href: '/dashboard/settings/contact', labelAr: 'إعدادات التواصل', icon: Phone, indent: true },
+  { href: '/dashboard/settings/social', labelAr: 'التواصل الاجتماعي', icon: Share2, indent: true },
   { href: '/dashboard/settings/seo', labelAr: 'إعدادات SEO', icon: Search, indent: true },
 ];
 
