@@ -123,8 +123,8 @@ export default function SocialSettingsPage() {
 
         {SOCIAL_CONFIG.map(({ key, label, placeholder, color, icon: Icon }) => (
           <div key={key} className="flex items-center gap-4 p-4 rounded-xl" style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}15` }}>
-              <Icon className="w-5 h-5" style={{ color }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}15`, color }}>
+              <Icon className="w-5 h-5" />
             </div>
             <div className="flex-1 space-y-1">
               <Label className="text-sm font-medium text-gray-700">{label}</Label>
