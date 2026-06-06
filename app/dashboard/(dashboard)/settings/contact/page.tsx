@@ -12,6 +12,7 @@ const KEYS = [
   'phone', 'whatsapp', 'email',
   'address_ar',
   'working_hours_ar',
+  'location_url',
   'maps_embed_url',
 ];
 
@@ -21,7 +22,8 @@ const LABELS: Record<string, string> = {
   email: 'البريد الإلكتروني',
   address_ar: 'العنوان',
   working_hours_ar: 'ساعات العمل',
-  maps_embed_url: 'رابط خرائط Google (embed)',
+  location_url: 'رابط Google Maps (قابل للنقر)',
+  maps_embed_url: 'رابط خرائط Google (embed للتضمين)',
 };
 
 const TEXTAREA_KEYS = ['address_ar', 'maps_embed_url'];

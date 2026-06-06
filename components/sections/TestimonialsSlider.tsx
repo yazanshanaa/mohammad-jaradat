@@ -1,15 +1,14 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 import { SectionTitle } from '@/components/shared/SectionTitle';
+import { prisma } from '@/lib/prisma';
 
 interface TestimonialsSliderProps {
   locale: string;
 }
 
-const TESTIMONIALS = [
+const FALLBACK_TESTIMONIALS = [
   {
     nameAr: 'محمد أبو خضر', nameEn: 'Mohammad Abu Khader',
     titleAr: 'صاحب منزل - رام الله', titleEn: 'Homeowner - Ramallah',
@@ -33,8 +32,32 @@ const TESTIMONIALS = [
   },
 ];
 
-export function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
-  const t = useTranslations('testimonials');
+export async function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
+  const t = await getTranslations('testimonials');
+
+  let testimonials: typeof FALLBACK_TESTIMONIALS = [];
+  try {
+    const rows = await prisma.testimonial.findMany({
+      where: { isActive: true },
+      orderBy: [{ isFeatured: 'desc' }, { sortOrder: 'asc' }],
+      take: 6,
+    });
+    if (rows.length > 0) {
+      testimonials = rows.map(r => ({
+        nameAr: r.nameAr,
+        nameEn: r.nameEn,
+        titleAr: r.titleAr,
+        titleEn: r.titleEn,
+        contentAr: r.contentAr,
+        contentEn: r.contentEn,
+        rating: r.rating,
+      }));
+    } else {
+      testimonials = FALLBACK_TESTIMONIALS;
+    }
+  } catch {
+    testimonials = FALLBACK_TESTIMONIALS;
+  }
 
   return (
     <section
@@ -45,7 +68,7 @@ export function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
         <SectionTitle title={t('title')} subtitle={t('subtitle')} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t, index) => (
+          {testimonials.map((item, index) => (
             <motion.div
               key={index}
               className="rounded-2xl p-6 relative card-hover"
@@ -65,7 +88,7 @@ export function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
 
               {/* Stars */}
               <div className="flex gap-1 mb-4">
-                {Array.from({ length: t.rating }).map((_, i) => (
+                {Array.from({ length: item.rating }).map((_, i) => (
                   <Star
                     key={i}
                     className="h-4 w-4 fill-current"
@@ -76,7 +99,7 @@ export function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
 
               {/* Content */}
               <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
-                {locale === 'ar' ? t.contentAr : t.contentEn}
+                {locale === 'ar' ? item.contentAr : item.contentEn}
               </p>
 
               {/* Author */}
@@ -85,14 +108,14 @@ export function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
                   style={{ background: 'linear-gradient(135deg, var(--solar-gold), var(--solar-gold-dark))' }}
                 >
-                  {(locale === 'ar' ? t.nameAr : t.nameEn)[0]}
+                  {(locale === 'ar' ? item.nameAr : item.nameEn)[0]}
                 </div>
                 <div>
                   <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
-                    {locale === 'ar' ? t.nameAr : t.nameEn}
+                    {locale === 'ar' ? item.nameAr : item.nameEn}
                   </p>
                   <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    {locale === 'ar' ? t.titleAr : t.titleEn}
+                    {locale === 'ar' ? item.titleAr : item.titleEn}
                   </p>
                 </div>
               </div>

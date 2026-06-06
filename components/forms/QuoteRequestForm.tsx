@@ -9,7 +9,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { LOCATIONS } from '@/lib/calculator';
+const LOCATIONS = [
+  { value: 'ramallah', labelAr: 'رام الله والبيرة', labelEn: 'Ramallah & Al-Bireh' },
+  { value: 'nablus', labelAr: 'نابلس', labelEn: 'Nablus' },
+  { value: 'hebron', labelAr: 'الخليل', labelEn: 'Hebron' },
+  { value: 'jenin', labelAr: 'جنين', labelEn: 'Jenin' },
+  { value: 'tulkarm', labelAr: 'طولكرم', labelEn: 'Tulkarm' },
+  { value: 'qalqilya', labelAr: 'قلقيلية', labelEn: 'Qalqilya' },
+  { value: 'bethlehem', labelAr: 'بيت لحم', labelEn: 'Bethlehem' },
+  { value: 'jericho', labelAr: 'أريحا', labelEn: 'Jericho' },
+  { value: 'salfit', labelAr: 'سلفيت', labelEn: 'Salfit' },
+  { value: 'tubas', labelAr: 'طوباس', labelEn: 'Tubas' },
+  { value: 'other', labelAr: 'أخرى', labelEn: 'Other' },
+];
 
 interface QuoteRequestFormProps {
   calculatorResult?: object;

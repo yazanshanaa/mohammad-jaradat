@@ -5,7 +5,17 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Calculator, Sun, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  settings: Record<string, string>;
+  locale?: string;
+}
+
+export function HeroSection({ settings, locale = 'ar' }: HeroSectionProps) {
+  const title = settings['hero_title_ar'] || 'طاقة شمسية لمستقبل أفضل';
+  const subtitle = settings['hero_subtitle_ar'] || 'نصمم ونركب أنظمة الطاقة الشمسية المتكاملة لمنزلك وعملك بأعلى جودة وأفضل أسعار في فلسطين';
+  const cta = settings['hero_cta_ar'] || 'احصل على عرض سعر';
+  const statsProjects = settings['stats_projects'] || '500';
+
   const features = [
     { icon: Sun, label: 'أجهزة عالية الجودة' },
     { icon: Zap, label: 'تركيب احترافي' },
@@ -62,27 +72,12 @@ export function HeroSection() {
 
             {/* Title */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-              طاقة شمسية
-              <br />
-              لمستقبل{' '}
-              <span
-                className="relative inline-block"
-                style={{ color: 'var(--solar-gold)' }}
-              >
-                أفضل
-                <motion.div
-                  className="absolute -bottom-1 left-0 right-0 h-1 rounded-full"
-                  style={{ backgroundColor: 'var(--solar-gold)' }}
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
-                />
-              </span>
+              {title}
             </h1>
 
             {/* Subtitle */}
             <p className="text-lg text-white/80 mb-8 leading-relaxed max-w-lg">
-              نصمم ونركب أنظمة الطاقة الشمسية المتكاملة لمنزلك وعملك بأعلى جودة وأفضل أسعار في فلسطين
+              {subtitle}
             </p>
 
             {/* CTAs */}
@@ -93,12 +88,12 @@ export function HeroSection() {
                 className="font-bold text-white shadow-lg px-8"
                 style={{ backgroundColor: 'var(--solar-gold)' }}
               >
-                <Link href="/contact">
-                  احصل على عرض سعر
+                <Link href={`/${locale}/contact`}>
+                  {cta}
                   <ArrowLeft className="h-4 w-4 ms-2" />
                 </Link>
               </Button>
-              <Link href="/calculator">
+              <Link href={`/${locale}/calculator`}>
                 <Button
                   variant="outline"
                   size="lg"
@@ -157,7 +152,7 @@ export function HeroSection() {
               {[
                 { angle: 0, value: '90%', label: 'توفير في الفاتورة', color: 'var(--eco-green)' },
                 { angle: 120, value: '25', label: 'سنة ضمان', color: 'var(--sky-blue)' },
-                { angle: 240, value: '45+', label: 'مشروع منجز', color: 'var(--solar-gold)' },
+                { angle: 240, value: `${statsProjects}+`, label: 'مشروع منجز', color: 'var(--solar-gold)' },
               ].map(({ angle, value, label, color }) => {
                 const rad = (angle * Math.PI) / 180;
                 const r = 150;

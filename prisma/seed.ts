@@ -32,24 +32,67 @@ async function main() {
   const userId = admin.id;
 
   // 2. Calculator Config
-  // Note: key is now composite or userId is unique
+  const defaultSystemSizes = [
+    { kw: 3,  onGrid: 12000,  offGrid: 18000,  hybrid: 22000  },
+    { kw: 5,  onGrid: 18000,  offGrid: 25000,  hybrid: 30000  },
+    { kw: 8,  onGrid: 28000,  offGrid: 38000,  hybrid: 45000  },
+    { kw: 10, onGrid: 35000,  offGrid: 47000,  hybrid: 56000  },
+    { kw: 12, onGrid: 42000,  offGrid: 57000,  hybrid: 67000  },
+    { kw: 15, onGrid: 52000,  offGrid: 70000,  hybrid: 82000  },
+    { kw: 20, onGrid: 68000,  offGrid: 92000,  hybrid: 108000 },
+    { kw: 25, onGrid: 84000,  offGrid: 113000, hybrid: 132000 },
+    { kw: 30, onGrid: 100000, offGrid: 135000, hybrid: 158000 },
+  ];
+
+  const defaultBatteryOptions = [
+    { id: 'bat-5kwh',  labelAr: 'بطارية 5 كيلوواط/ساعة',  capacityKwh: 5,  priceIls: 5000  },
+    { id: 'bat-10kwh', labelAr: 'بطارية 10 كيلوواط/ساعة', capacityKwh: 10, priceIls: 9000  },
+    { id: 'bat-15kwh', labelAr: 'بطارية 15 كيلوواط/ساعة', capacityKwh: 15, priceIls: 13000 },
+  ];
+
+  const defaultSystemContent = {
+    onGrid: {
+      name: 'نظام شبكي (On-Grid)',
+      shortDesc: 'الأقل تكلفة، متصل بشبكة الكهرباء',
+      fullDesc: 'النظام الشبكي يعمل بالتوازي مع شبكة الكهرباء العامة. يقلل فاتورتك بشكل كبير ويتيح بيع الكهرباء الفائضة للشركة.',
+      pros: ['الأقل تكلفة', 'لا يحتاج بطاريات', 'صيانة بسيطة', 'عمر طويل'],
+      cons: ['يتوقف عند انقطاع الكهرباء', 'يعتمد على وجود شبكة'],
+    },
+    offGrid: {
+      name: 'نظام مستقل (Off-Grid)',
+      shortDesc: 'مستقل تماماً عن شبكة الكهرباء',
+      fullDesc: 'النظام المستقل يعمل بشكل كامل دون الحاجة لشبكة الكهرباء. مثالي للمناطق التي لا تصلها الكهرباء أو للرغبة في الاستقلالية التامة.',
+      pros: ['استقلالية كاملة', 'يعمل في المناطق النائية', 'لا فواتير كهرباء'],
+      cons: ['الأعلى تكلفة', 'يحتاج بطاريات', 'صيانة أكثر'],
+    },
+    hybrid: {
+      name: 'نظام هجين (Hybrid)',
+      shortDesc: 'شبكة + بطاريات احتياطية',
+      fullDesc: 'النظام الهجين يجمع بين مميزات النظامين. متصل بالشبكة ولديه بطاريات احتياطية تعمل وقت انقطاع الكهرباء.',
+      pros: ['يعمل وقت انقطاع الكهرباء', 'توفير عالٍ في الفاتورة', 'مرونة عالية'],
+      cons: ['تكلفة متوسطة-عالية', 'يحتاج بطاريات'],
+    },
+  };
+
   await prisma.calculatorConfig.upsert({
     where: { userId: userId },
     update: {},
     create: {
       userId: userId,
-      averageSunHoursPerDay: 5.5,
-      panelWatts: 550,
-      inverterEfficiency: 0.96,
-      systemLoss: 0.14,
       pricePerKwhIls: 0.70,
-      pricePerWattInstalled: 4.50,
-      panelPriceIls: 400,
-      inverterPriceBase: 3500,
-      batteryPricePerKwh: 2200,
-      systemLifeYears: 25,
-      annualDegradation: 0.005,
-      co2PerKwh: 0.49,
+      sunHoursPerDay: 5.5,
+      panelWatts: 620,
+      minBillIls: 300,
+      maxBillIls: 3000,
+      maxSystemKw: 30,
+      systemSizes: defaultSystemSizes,
+      batteryOptions: defaultBatteryOptions,
+      batteryVisible: true,
+      systemContent: defaultSystemContent,
+      contactWhatsapp: '970591234567',
+      contactPhone: '+970591234567',
+      contactEmail: 'info@solarpro.ps',
+      contactMessage: 'نظامك يحتاج دراسة خاصة، تواصل معنا مباشرة وسيقوم فريقنا بمساعدتك',
     },
   });
   console.log('✅ Calculator config created');
@@ -501,7 +544,7 @@ async function main() {
     { key: 'hero_subtitle_en', value: 'We design and install comprehensive solar energy systems for your home and business with the highest quality and best prices', type: 'text', group: 'homepage' },
     { key: 'stats_years', value: '10', type: 'number', group: 'homepage' },
     { key: 'stats_projects', value: '500', type: 'number', group: 'homepage' },
-    { key: 'stats_kw', value: '5000', type: 'number', group: 'homepage' },
+    { key: 'stats_mw', value: '5', type: 'number', group: 'homepage' },
     { key: 'stats_clients', value: '450', type: 'number', group: 'homepage' },
   ];
 

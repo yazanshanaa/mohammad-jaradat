@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { SolarCalculator } from '@/components/calculator/SolarCalculator';
+import SolarCalculator from '@/components/calculator/SolarCalculator';
 import { Sun, Zap, TrendingUp, Shield } from 'lucide-react';
 
 interface Props {

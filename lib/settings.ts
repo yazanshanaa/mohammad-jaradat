@@ -25,8 +25,9 @@ const DEFAULTS: Record<string, string> = {
   hero_subtitle_ar: 'نصمم ونركب أنظمة الطاقة الشمسية المتكاملة لمنزلك وعملك بأعلى جودة وأفضل أسعار في فلسطين',
   hero_cta_ar: 'احصل على عرض مجاني',
   tagline_ar: 'طاقة نظيفة لمستقبل أفضل',
+  stats_years: '10',
   stats_projects: '500',
-  stats_clients: '400',
+  stats_clients: '450',
   stats_mw: '5',
   // إظهار الأقسام
   section_services_visible: 'true',

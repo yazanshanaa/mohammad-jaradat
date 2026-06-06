@@ -22,8 +22,8 @@ export default async function HomePage({
 
   return (
     <>
-      <HeroSection />
-      <StatsCounter locale={locale} />
+      <HeroSection settings={settings} locale={locale} />
+      <StatsCounter locale={locale} settings={settings} />
       <SystemsPreview locale={locale} />
       {showServices && <ServicesSection locale={locale} />}
       {showProjects && <ProjectsGrid locale={locale} />}

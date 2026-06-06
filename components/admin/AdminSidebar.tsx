@@ -5,17 +5,17 @@ import { usePathname } from 'next/navigation';
 import {
   Sun, LayoutDashboard, Zap, FolderOpen,
   Wrench, Settings, Calculator, ChevronRight,
-  Star, ImageIcon, Home, Phone, Search,
-  ShoppingBag, ClipboardList, Store, Share2,
+  Star, Home, Phone, Search,
+  ShoppingBag, ClipboardList, Store, Share2, Users,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard/dashboard', labelAr: 'لوحة التحكم', icon: LayoutDashboard },
+  { href: '/dashboard/leads', labelAr: 'طلبات العملاء', icon: Users },
   { href: '/dashboard/systems', labelAr: 'الأنظمة الشمسية', icon: Zap },
   { href: '/dashboard/projects', labelAr: 'المشاريع', icon: FolderOpen },
   { href: '/dashboard/services', labelAr: 'الخدمات', icon: Wrench },
   { href: '/dashboard/testimonials', labelAr: 'التقييمات', icon: Star },
-  { href: '/dashboard/media', labelAr: 'مكتبة الوسائط', icon: ImageIcon },
   { href: '/dashboard/calculator-config', labelAr: 'إعدادات الحاسبة', icon: Calculator },
   { href: '/dashboard/products', labelAr: 'المتجر', icon: Store, sub: true },
   { href: '/dashboard/products', labelAr: 'المنتجات', icon: ShoppingBag, indent: true },

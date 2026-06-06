@@ -36,7 +36,6 @@ model User {
   leads                Lead[]
   settings             Setting[]
   calculatorConfig     CalculatorConfig?
-  media                Media[]
   newsletterSubscribers NewsletterSubscriber[]
   testimonials         Testimonial[]
   products             Product[]
@@ -270,27 +269,37 @@ model Setting {
 
 // ===== CALCULATOR CONFIG =====
 model CalculatorConfig {
-  id                    String   @id @default(cuid())
-  averageSunHoursPerDay Float    @default(5.5)
-  panelWatts            Int      @default(550)
-  inverterEfficiency    Float    @default(0.96)
-  systemLoss            Float    @default(0.14)
-  pricePerKwhIls        Float    @default(0.70)
-  pricePerWattInstalled Float    @default(4.50)
-  panelPriceIls         Int      @default(400)
-  inverterPriceBase     Int      @default(3500)
-  batteryPricePerKwh    Int      @default(2200)
-  systemLifeYears       Int      @default(25)
-  annualDegradation     Float    @default(0.005)
-  co2PerKwh             Float    @default(0.49)
-  systemPricing         Json?
-  batteryOptions        Json?
-  batteryVisible        Boolean  @default(true)
+  id String @id @default(cuid())
 
-  userId                String   @unique // One config per user
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // ─── معاملات الحساب ───────────────────────────────────────────────
+  pricePerKwhIls  Float @default(0.70)
+  sunHoursPerDay  Float @default(5.5)
+  panelWatts      Int   @default(620)
 
-  updatedAt             DateTime @updatedAt
+  // ─── حدود التحكم ──────────────────────────────────────────────────
+  minBillIls   Int @default(300)
+  maxBillIls   Int @default(3000)
+  maxSystemKw  Int @default(30)
+
+  // ─── أحجام الأنظمة والأسعار ───────────────────────────────────────
+  systemSizes Json @default("[]")
+
+  // ─── البطاريات ────────────────────────────────────────────────────
+  batteryOptions Json    @default("[]")
+  batteryVisible Boolean @default(true)
+
+  // ─── المحتوى التعليمي للأنظمة الثلاثة ────────────────────────────
+  systemContent Json?
+
+  // ─── معلومات التواصل المباشر ──────────────────────────────────────
+  contactWhatsapp String @default("")
+  contactPhone    String @default("")
+  contactEmail    String @default("")
+  contactMessage  String @default("نظامك يحتاج دراسة خاصة، تواصل معنا مباشرة وسيقوم فريقنا بمساعدتك")
+
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
 }
 
 // ===== NEWSLETTER =====
@@ -379,23 +388,3 @@ model RateLimit {
   resetAt   DateTime
 }
 
-// ===== MEDIA =====
-model Media {
-  id        String   @id @default(cuid())
-  url       String
-  publicId  String   @unique
-  filename  String
-  size      Int
-  width     Int?
-  height    Int?
-  format    String
-  folder    String   @default("general")
-  altAr     String?
-  altEn     String?
-  usedIn    Json?
-
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-}

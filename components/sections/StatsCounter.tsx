@@ -7,16 +7,17 @@ import { Award, BarChart3, Zap, Users } from 'lucide-react';
 
 interface StatsCounterProps {
   locale: string;
+  settings?: Record<string, string>;
 }
 
-export function StatsCounter({ locale: _locale }: StatsCounterProps) {
+export function StatsCounter({ locale: _locale, settings = {} }: StatsCounterProps) {
   const t = useTranslations('stats');
 
   const stats = [
-    { value: 10, suffix: '+', label: t('years'), icon: Award, color: 'var(--solar-gold)' },
-    { value: 45, suffix: '', label: t('projects'), icon: BarChart3, color: 'var(--sky-blue)' },
-    { value: 5000, suffix: '+', label: t('kw'), icon: Zap, color: 'var(--eco-green)' },
-    { value: 450, suffix: '+', label: t('clients'), icon: Users, color: 'var(--solar-gold-dark)' },
+    { value: parseInt(settings['stats_years'] || '10'), suffix: '+', label: t('years'), icon: Award, color: 'var(--solar-gold)' },
+    { value: parseInt(settings['stats_projects'] || '500'), suffix: '+', label: t('projects'), icon: BarChart3, color: 'var(--sky-blue)' },
+    { value: parseInt(settings['stats_mw'] || '5'), suffix: '+', label: t('mw'), icon: Zap, color: 'var(--eco-green)' },
+    { value: parseInt(settings['stats_clients'] || '450'), suffix: '+', label: t('clients'), icon: Users, color: 'var(--solar-gold-dark)' },
   ];
 
   return (

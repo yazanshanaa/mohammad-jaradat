@@ -13,7 +13,7 @@ const KEYS = [
   'hero_subtitle_ar',
   'hero_cta_ar',
   'tagline_ar',
-  'stats_projects', 'stats_clients', 'stats_mw',
+  'stats_years', 'stats_projects', 'stats_clients', 'stats_mw',
 ];
 
 const LABELS: Record<string, string> = {
@@ -21,6 +21,7 @@ const LABELS: Record<string, string> = {
   hero_subtitle_ar: 'الوصف المختصر',
   hero_cta_ar: 'نص زر الطلب',
   tagline_ar: 'الشعار',
+  stats_years: 'سنوات الخبرة',
   stats_projects: 'عدد المشاريع',
   stats_clients: 'عدد العملاء',
   stats_mw: 'الميجاواط المثبتة',
@@ -46,10 +47,11 @@ export default function HomepageSettingsPage() {
   }, []);
 
   const projectsVisible = values['section_projects_visible'] !== 'false';
+  const servicesVisible = values['section_services_visible'] !== 'false';
 
   const handleSave = async () => {
     setSaving(true);
-    const allKeys = [...KEYS, 'section_projects_visible'];
+    const allKeys = [...KEYS, 'section_projects_visible', 'section_services_visible'];
     const payload = allKeys.map(key => ({ key, value: values[key] || '' }));
     try {
       const res = await fetch('/api/admin/settings', {
@@ -115,6 +117,32 @@ export default function HomepageSettingsPage() {
       {/* إعدادات الأقسام */}
       <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4" style={{ border: '1px solid #e5e7eb' }}>
         <h2 className="font-semibold text-gray-800 text-sm pb-2" style={{ borderBottom: '1px solid #f3f4f6' }}>إظهار / إخفاء الأقسام</h2>
+
+        {/* قسم الخدمات */}
+        <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }}>
+          <div className="flex items-center gap-3">
+            {servicesVisible ? <Eye className="h-5 w-5 text-green-500" /> : <EyeOff className="h-5 w-5 text-gray-400" />}
+            <div>
+              <div className="font-medium text-sm text-gray-900">قسم خدماتنا</div>
+              <div className="text-xs text-gray-500">
+                {servicesVisible ? 'ظاهر في الصفحة الرئيسية' : 'مخفي من الصفحة الرئيسية'}
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setValues(p => ({ ...p, section_services_visible: servicesVisible ? 'false' : 'true' }))}
+            className="w-12 h-6 rounded-full transition-all relative flex-shrink-0"
+            style={{ backgroundColor: servicesVisible ? '#10B981' : '#D1D5DB' }}
+          >
+            <div
+              className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300"
+              style={{ right: servicesVisible ? '4px' : '26px' }}
+            />
+          </button>
+        </div>
+
+        {/* قسم المشاريع */}
         <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }}>
           <div className="flex items-center gap-3">
             {projectsVisible ? <Eye className="h-5 w-5 text-blue-500" /> : <EyeOff className="h-5 w-5 text-gray-400" />}
