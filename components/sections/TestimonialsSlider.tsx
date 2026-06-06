@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
-import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 import { SectionTitle } from '@/components/shared/SectionTitle';
 import { prisma } from '@/lib/prisma';
+import { TestimonialsCards } from './TestimonialsCards';
 
 interface TestimonialsSliderProps {
   locale: string;
@@ -32,97 +32,38 @@ const FALLBACK_TESTIMONIALS = [
   },
 ];
 
+export type TestimonialItem = typeof FALLBACK_TESTIMONIALS[0];
+
 export async function TestimonialsSlider({ locale }: TestimonialsSliderProps) {
   const t = await getTranslations('testimonials');
 
-  let testimonials: typeof FALLBACK_TESTIMONIALS = [];
+  let testimonials: TestimonialItem[] = [];
   try {
     const rows = await prisma.testimonial.findMany({
       where: { isActive: true },
       orderBy: [{ isFeatured: 'desc' }, { sortOrder: 'asc' }],
       take: 6,
     });
-    if (rows.length > 0) {
-      testimonials = rows.map(r => ({
-        nameAr: r.nameAr,
-        nameEn: r.nameEn,
-        titleAr: r.titleAr,
-        titleEn: r.titleEn,
-        contentAr: r.contentAr,
-        contentEn: r.contentEn,
-        rating: r.rating,
-      }));
-    } else {
-      testimonials = FALLBACK_TESTIMONIALS;
-    }
+    testimonials = rows.length > 0
+      ? rows.map(r => ({
+          nameAr: r.nameAr, nameEn: r.nameEn,
+          titleAr: r.titleAr, titleEn: r.titleEn,
+          contentAr: r.contentAr, contentEn: r.contentEn,
+          rating: r.rating,
+        }))
+      : FALLBACK_TESTIMONIALS;
   } catch {
     testimonials = FALLBACK_TESTIMONIALS;
   }
 
   return (
-    <section
-      className="section-padding"
-      style={{ backgroundColor: 'var(--bg-card)' }}
-    >
+    <section className="section-padding" style={{ backgroundColor: 'var(--bg-card)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionTitle title={t('title')} subtitle={t('subtitle')} />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((item, index) => (
-            <motion.div
-              key={index}
-              className="rounded-2xl p-6 relative card-hover"
-              style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              {/* Quote icon */}
-              <div
-                className="absolute top-4 end-4 w-10 h-10 rounded-full flex items-center justify-center opacity-20"
-                style={{ backgroundColor: 'var(--solar-gold)' }}
-              >
-                <Quote className="h-5 w-5" style={{ color: 'var(--solar-gold)' }} />
-              </div>
-
-              {/* Stars */}
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: item.rating }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 fill-current"
-                    style={{ color: 'var(--solar-gold)' }}
-                  />
-                ))}
-              </div>
-
-              {/* Content */}
-              <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
-                {locale === 'ar' ? item.contentAr : item.contentEn}
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                  style={{ background: 'linear-gradient(135deg, var(--solar-gold), var(--solar-gold-dark))' }}
-                >
-                  {(locale === 'ar' ? item.nameAr : item.nameEn)[0]}
-                </div>
-                <div>
-                  <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
-                    {locale === 'ar' ? item.nameAr : item.nameEn}
-                  </p>
-                  <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    {locale === 'ar' ? item.titleAr : item.titleEn}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <TestimonialsCards testimonials={testimonials} locale={locale} />
       </div>
     </section>
   );
 }
+
+export { Star, Quote };
