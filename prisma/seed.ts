@@ -33,24 +33,26 @@ async function main() {
 
   // 2. Calculator Config
   // الأسعار بالشيكل = السعر الكامل للنظام (ألواح + إنفرتر + هيكل + كوابل + قواطع + تركيب)
-  // متحقّق مقابل سوق الأردن 2025: نظام شبكي سكني 3–5kW ≈ 2,300–4,200 دينار ≈ ₪11,400–20,800
+  // معايَرة على السوق العربي داخل إسرائيل 2025–2026:
+  //   سكني على الشبكة ≈ ₪3,500–5,500/kW (المصدر: midrag.co.il)، تجاري/أكبر ≈ ₪3,000–3,500/kW
+  //   هنا بأسعار تنافسية للوسط العربي: ~₪3,700–4,200/kW للصغير، تنخفض لـ~₪3,100/kW للكبير
   // مقسّمة حسب الفاز: فاز واحد للأنظمة الصغيرة (≤6kW)، و3 فاز من 5kW فأعلى (مع فرق سعر إنفرتر واقعي)
   const defaultSystemSizes = [
     // ── فاز واحد (توصيلة 220V — المنازل العادية) ──
-    { kw: 3, phase: 'single', onGrid: 12000, offGrid: 18000, hybrid: 22000 },
-    { kw: 4, phase: 'single', onGrid: 15500, offGrid: 23000, hybrid: 28000 },
-    { kw: 5, phase: 'single', onGrid: 18000, offGrid: 25000, hybrid: 30000 },
-    { kw: 6, phase: 'single', onGrid: 21000, offGrid: 29000, hybrid: 35000 },
+    { kw: 3, phase: 'single', onGrid: 12500, offGrid: 17000, hybrid: 20000 },
+    { kw: 4, phase: 'single', onGrid: 16000, offGrid: 22000, hybrid: 26000 },
+    { kw: 5, phase: 'single', onGrid: 19000, offGrid: 26000, hybrid: 31000 },
+    { kw: 6, phase: 'single', onGrid: 22000, offGrid: 30000, hybrid: 36000 },
     // ── 3 فاز (توصيلة 380V — المنازل الكبيرة والمحلات والمصانع) ──
-    { kw: 5,  phase: 'three', onGrid: 19500,  offGrid: 27000,  hybrid: 32000  },
-    { kw: 6,  phase: 'three', onGrid: 23000,  offGrid: 31000,  hybrid: 37000  },
-    { kw: 8,  phase: 'three', onGrid: 28000,  offGrid: 38000,  hybrid: 45000  },
-    { kw: 10, phase: 'three', onGrid: 35000,  offGrid: 47000,  hybrid: 56000  },
-    { kw: 12, phase: 'three', onGrid: 42000,  offGrid: 57000,  hybrid: 67000  },
-    { kw: 15, phase: 'three', onGrid: 52000,  offGrid: 70000,  hybrid: 82000  },
-    { kw: 20, phase: 'three', onGrid: 68000,  offGrid: 92000,  hybrid: 108000 },
-    { kw: 25, phase: 'three', onGrid: 84000,  offGrid: 113000, hybrid: 132000 },
-    { kw: 30, phase: 'three', onGrid: 100000, offGrid: 135000, hybrid: 158000 },
+    { kw: 5,  phase: 'three', onGrid: 20500,  offGrid: 28000,  hybrid: 33000  },
+    { kw: 6,  phase: 'three', onGrid: 24000,  offGrid: 33000,  hybrid: 39000  },
+    { kw: 8,  phase: 'three', onGrid: 30000,  offGrid: 41000,  hybrid: 49000  },
+    { kw: 10, phase: 'three', onGrid: 36000,  offGrid: 49000,  hybrid: 58000  },
+    { kw: 12, phase: 'three', onGrid: 42000,  offGrid: 57000,  hybrid: 68000  },
+    { kw: 15, phase: 'three', onGrid: 51000,  offGrid: 69000,  hybrid: 82000  },
+    { kw: 20, phase: 'three', onGrid: 66000,  offGrid: 89000,  hybrid: 106000 },
+    { kw: 25, phase: 'three', onGrid: 80000,  offGrid: 108000, hybrid: 129000 },
+    { kw: 30, phase: 'three', onGrid: 93000,  offGrid: 125000, hybrid: 150000 },
   ];
 
   const defaultBatteryOptions = [
@@ -85,15 +87,22 @@ async function main() {
 
   await prisma.calculatorConfig.upsert({
     where: { userId: userId },
-    // تحديث جدول الأحجام/الأسعار والبطاريات والمحتوى عند إعادة التشغيل (يحدّث الديمو الحيّ)
+    // إعادة البذر = إصلاح كامل لإعدادات الحاسبة لقيم معروفة الصحة (يصحّح أي بيانات فاسدة).
+    // المدير يستطيع إعادة الضبط من لوحة التحكم بعدها.
     update: {
+      pricePerKwhIls: 0.64,
+      sunHoursPerDay: 5.5,
+      panelWatts: 620,
+      minBillIls: 300,
+      maxBillIls: 3000,
+      maxSystemKw: 30,
       systemSizes: defaultSystemSizes,
       batteryOptions: defaultBatteryOptions,
       systemContent: defaultSystemContent,
     },
     create: {
       userId: userId,
-      pricePerKwhIls: 0.70,
+      pricePerKwhIls: 0.64, // التعرفة المنزلية في إسرائيل 2025–2026 ≈ ₪0.64/kWh شامل الضريبة
       sunHoursPerDay: 5.5,
       panelWatts: 620,
       minBillIls: 300,
