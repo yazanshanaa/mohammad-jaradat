@@ -32,16 +32,25 @@ async function main() {
   const userId = admin.id;
 
   // 2. Calculator Config
+  // الأسعار بالشيكل = السعر الكامل للنظام (ألواح + إنفرتر + هيكل + كوابل + قواطع + تركيب)
+  // متحقّق مقابل سوق الأردن 2025: نظام شبكي سكني 3–5kW ≈ 2,300–4,200 دينار ≈ ₪11,400–20,800
+  // مقسّمة حسب الفاز: فاز واحد للأنظمة الصغيرة (≤6kW)، و3 فاز من 5kW فأعلى (مع فرق سعر إنفرتر واقعي)
   const defaultSystemSizes = [
-    { kw: 3,  onGrid: 12000,  offGrid: 18000,  hybrid: 22000  },
-    { kw: 5,  onGrid: 18000,  offGrid: 25000,  hybrid: 30000  },
-    { kw: 8,  onGrid: 28000,  offGrid: 38000,  hybrid: 45000  },
-    { kw: 10, onGrid: 35000,  offGrid: 47000,  hybrid: 56000  },
-    { kw: 12, onGrid: 42000,  offGrid: 57000,  hybrid: 67000  },
-    { kw: 15, onGrid: 52000,  offGrid: 70000,  hybrid: 82000  },
-    { kw: 20, onGrid: 68000,  offGrid: 92000,  hybrid: 108000 },
-    { kw: 25, onGrid: 84000,  offGrid: 113000, hybrid: 132000 },
-    { kw: 30, onGrid: 100000, offGrid: 135000, hybrid: 158000 },
+    // ── فاز واحد (توصيلة 220V — المنازل العادية) ──
+    { kw: 3, phase: 'single', onGrid: 12000, offGrid: 18000, hybrid: 22000 },
+    { kw: 4, phase: 'single', onGrid: 15500, offGrid: 23000, hybrid: 28000 },
+    { kw: 5, phase: 'single', onGrid: 18000, offGrid: 25000, hybrid: 30000 },
+    { kw: 6, phase: 'single', onGrid: 21000, offGrid: 29000, hybrid: 35000 },
+    // ── 3 فاز (توصيلة 380V — المنازل الكبيرة والمحلات والمصانع) ──
+    { kw: 5,  phase: 'three', onGrid: 19500,  offGrid: 27000,  hybrid: 32000  },
+    { kw: 6,  phase: 'three', onGrid: 23000,  offGrid: 31000,  hybrid: 37000  },
+    { kw: 8,  phase: 'three', onGrid: 28000,  offGrid: 38000,  hybrid: 45000  },
+    { kw: 10, phase: 'three', onGrid: 35000,  offGrid: 47000,  hybrid: 56000  },
+    { kw: 12, phase: 'three', onGrid: 42000,  offGrid: 57000,  hybrid: 67000  },
+    { kw: 15, phase: 'three', onGrid: 52000,  offGrid: 70000,  hybrid: 82000  },
+    { kw: 20, phase: 'three', onGrid: 68000,  offGrid: 92000,  hybrid: 108000 },
+    { kw: 25, phase: 'three', onGrid: 84000,  offGrid: 113000, hybrid: 132000 },
+    { kw: 30, phase: 'three', onGrid: 100000, offGrid: 135000, hybrid: 158000 },
   ];
 
   const defaultBatteryOptions = [
@@ -76,7 +85,12 @@ async function main() {
 
   await prisma.calculatorConfig.upsert({
     where: { userId: userId },
-    update: {},
+    // تحديث جدول الأحجام/الأسعار والبطاريات والمحتوى عند إعادة التشغيل (يحدّث الديمو الحيّ)
+    update: {
+      systemSizes: defaultSystemSizes,
+      batteryOptions: defaultBatteryOptions,
+      systemContent: defaultSystemContent,
+    },
     create: {
       userId: userId,
       pricePerKwhIls: 0.70,

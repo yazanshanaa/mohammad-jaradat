@@ -149,7 +149,7 @@ export default function CalculatorConfigPage() {
   // ── أحجام الأنظمة ──
 
   function addSize() {
-    const newSize: SystemSize = { kw: 0, onGrid: 0, offGrid: 0, hybrid: 0 };
+    const newSize: SystemSize = { kw: 0, phase: 'single', onGrid: 0, offGrid: 0, hybrid: 0 };
     updateField('systemSizes', [...config.systemSizes, newSize]);
   }
 
@@ -158,6 +158,13 @@ export default function CalculatorConfigPage() {
       i === index ? { ...s, [field]: value } : s,
     );
     updateField('systemSizes', updated.sort((a, b) => a.kw - b.kw));
+  }
+
+  function updateSizePhase(index: number, phase: 'single' | 'three') {
+    const updated = config.systemSizes.map((s, i) =>
+      i === index ? { ...s, phase } : s,
+    );
+    updateField('systemSizes', updated);
   }
 
   function removeSize(index: number) {
@@ -391,7 +398,9 @@ export default function CalculatorConfigPage() {
                 className="rounded-xl p-3 text-sm"
                 style={{ background: '#fffbeb', border: '1px solid #fde68a', color: '#92400e' }}
               >
-                ⚠️ السعر المدخل هنا هو السعر <strong>الكامل</strong> للنظام شامل: الألواح + الانفيرتر + الهيكل الحديدي + الكوابل + القواطع + التركيب الكامل
+                ⚠️ السعر المدخل هنا هو السعر <strong>الكامل</strong> للنظام شامل: الألواح + الانفيرتر + الهيكل الحديدي + الكوابل + القواطع + التركيب الكامل.
+                <br />
+                🔌 <strong>الفاز</strong>: حدّد لكل حجم نوع التوصيلة — «فاز واحد» (220V، للمنازل العادية، عادةً حتى 6kW) أو «3 فاز» (380V، للمنازل الكبيرة والمحلات). إذا طلب الزبون فاز واحد لكن نظامه أكبر من أكبر حجم فاز واحد عرّفته هنا، تُرقّيه الحاسبة تلقائياً لأقرب نظام 3 فاز.
               </div>
 
               <div className="overflow-x-auto">
@@ -399,6 +408,7 @@ export default function CalculatorConfigPage() {
                   <thead>
                     <tr style={{ background: '#f9fafb', color: '#6b7280' }}>
                       <th className="p-3 text-right font-medium">حجم (kW)</th>
+                      <th className="p-3 text-right font-medium">الفاز</th>
                       <th className="p-3 text-right font-medium">🔌 شبكي (₪)</th>
                       <th className="p-3 text-right font-medium">🔋 مستقل (₪)</th>
                       <th className="p-3 text-right font-medium">⚡ هجين (₪)</th>
@@ -406,18 +416,36 @@ export default function CalculatorConfigPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {[...config.systemSizes]
-                      .sort((a, b) => a.kw - b.kw)
-                      .map((size, idx) => (
+                    {config.systemSizes.map((size, idx) => (
                         <tr
                           key={idx}
                           style={{ borderTop: '1px solid #f3f4f6' }}
                         >
-                          {(['kw', 'onGrid', 'offGrid', 'hybrid'] as (keyof SystemSize)[]).map(field => (
+                          <td className="p-2">
+                            <Input
+                              type="number"
+                              value={size.kw}
+                              onChange={e => updateSize(idx, 'kw', parseFloat(e.target.value) || 0)}
+                              className="h-8 text-sm"
+                              dir="ltr"
+                            />
+                          </td>
+                          <td className="p-2">
+                            <select
+                              value={size.phase ?? 'single'}
+                              onChange={e => updateSizePhase(idx, e.target.value as 'single' | 'three')}
+                              className="h-8 text-sm rounded-md border px-2 bg-white"
+                              style={{ borderColor: '#e5e7eb' }}
+                            >
+                              <option value="single">فاز واحد</option>
+                              <option value="three">3 فاز</option>
+                            </select>
+                          </td>
+                          {(['onGrid', 'offGrid', 'hybrid'] as (keyof SystemSize)[]).map(field => (
                             <td key={field} className="p-2">
                               <Input
                                 type="number"
-                                value={size[field]}
+                                value={size[field] as number}
                                 onChange={e =>
                                   updateSize(idx, field, parseFloat(e.target.value) || 0)
                                 }

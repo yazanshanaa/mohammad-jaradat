@@ -12,9 +12,11 @@ import { Label } from '@/components/ui/label';
 import {
   calculateSolarSystem,
   validateBill,
+  recommendPhase,
   type CalculatorConfig,
   type CalculatorResult,
   type SystemType,
+  type Phase,
   type SystemContentConfig,
 } from '@/lib/calculator';
 import dynamic from 'next/dynamic';
@@ -70,11 +72,18 @@ const slideVariants = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-type Screen = 'awareness' | 'education' | 'system-select' | 'bill-input' | 'result';
+type Screen = 'awareness' | 'education' | 'system-select' | 'phase-select' | 'bill-input' | 'result';
+
+const PHASE_LABEL: Record<Phase, string> = {
+  single: 'فاز واحد',
+  three: '3 فاز',
+};
 
 export default function SolarCalculator() {
   const [screen, setScreen] = useState<Screen>('awareness');
   const [systemType, setSystemType] = useState<SystemType | null>(null);
+  const [phaseChoice, setPhaseChoice] = useState<Phase | 'auto' | null>(null);
+  const [showPhaseHelp, setShowPhaseHelp] = useState(false);
   const [bill, setBill] = useState<string>('');
   const [result, setResult] = useState<CalculatorResult | null>(null);
   const [config, setConfig] = useState<CalculatorConfig | null>(null);
@@ -105,7 +114,7 @@ export default function SolarCalculator() {
     ? validateBill(billNum, config.minBillIls, config.maxBillIls)
     : 'valid';
 
-  // معاينة حية للحساب
+  // معاينة حية للحساب (واعية للفاز، مطابقة لمحرّك الحساب)
   const livePreview = useMemo(() => {
     if (!config || !bill || billValidation !== 'valid') return null;
     const n = parseFloat(bill);
@@ -113,14 +122,39 @@ export default function SolarCalculator() {
     const step1 = n / config.pricePerKwhIls;
     const step2 = step1 / 30;
     const step3 = step2 / config.sunHoursPerDay;
-    const sorted = [...config.systemSizes].sort((a, b) => a.kw - b.kw);
-    const matched = sorted.find(s => s.kw >= step3);
-    return { step1, step2, step3, matchedKw: matched?.kw ?? null };
-  }, [bill, config, billValidation]);
+    const resolvedPhase: Phase =
+      phaseChoice === 'auto' || phaseChoice == null
+        ? recommendPhase(step3, config)
+        : phaseChoice;
+    const match = (ph: Phase) =>
+      [...config.systemSizes]
+        .filter(s => s.phase == null || s.phase === ph)
+        .sort((a, b) => a.kw - b.kw)
+        .find(s => s.kw >= step3);
+    let matched = match(resolvedPhase);
+    let upgraded = false;
+    if (!matched && resolvedPhase === 'single') {
+      matched = match('three');
+      if (matched) upgraded = true;
+    }
+    return {
+      step1, step2, step3,
+      matchedKw: matched?.kw ?? null,
+      phase: (upgraded ? 'three' : resolvedPhase) as Phase,
+      upgraded,
+    };
+  }, [bill, config, billValidation, phaseChoice]);
 
   function handleCalculate() {
     if (!config || !systemType) return;
     const monthlyBillIls = parseFloat(bill) || 0;
+
+    // حساب الحجم الخام لحسم الفاز عند خيار "غير متأكد"
+    const rawKw = monthlyBillIls / config.pricePerKwhIls / 30 / config.sunHoursPerDay;
+    const requestedPhase: Phase =
+      phaseChoice === 'auto' || phaseChoice == null
+        ? recommendPhase(rawKw, config)
+        : phaseChoice;
 
     if (billValidation === 'too-high') {
       setResult({
@@ -132,12 +166,15 @@ export default function SolarCalculator() {
         panelWatts: config.panelWatts,
         totalPriceIls: 0,
         needsDirectContact: true,
+        phase: requestedPhase,
+        requestedPhase,
+        phaseUpgraded: false,
       });
       setScreen('result');
       return;
     }
 
-    const r = calculateSolarSystem({ monthlyBillIls, systemType, config });
+    const r = calculateSolarSystem({ monthlyBillIls, systemType, phase: requestedPhase, config });
     setResult(r);
     setScreen('result');
   }
@@ -145,6 +182,7 @@ export default function SolarCalculator() {
   function reset() {
     setScreen('awareness');
     setSystemType(null);
+    setPhaseChoice(null);
     setBill('');
     setResult(null);
     setSelectedBatteryId('');
@@ -342,8 +380,106 @@ export default function SolarCalculator() {
                 ← رجوع
               </Button>
               <Button
-                onClick={() => setScreen('bill-input')}
+                onClick={() => setScreen('phase-select')}
                 disabled={!systemType}
+                className="text-white font-semibold"
+                style={{ backgroundColor: 'var(--solar-gold)' }}
+              >
+                التالي: نوع التوصيلة ←
+              </Button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ───────────── شاشة 2.5: اختيار الفاز ───────────── */}
+        {screen === 'phase-select' && (
+          <motion.div
+            key="phase-select"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.25 }}
+          >
+            <h2 className="text-2xl font-bold mb-2 text-center" style={{ color: 'var(--text-primary)' }}>
+              ما نوع توصيلة الكهرباء؟
+            </h2>
+            <p className="mb-5 text-center text-sm flex items-center justify-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+              <span>هذا يحدّد نوع الإنفيرتر المناسب لنظامك</span>
+              <button
+                onClick={() => setShowPhaseHelp(v => !v)}
+                aria-label="ما معنى الفاز؟"
+                className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold"
+                style={{ background: 'rgba(245,166,35,0.15)', color: 'var(--solar-gold)' }}
+              >
+                !
+              </button>
+            </p>
+
+            {showPhaseHelp && (
+              <div
+                className="rounded-xl p-4 mb-5 text-sm leading-relaxed"
+                style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
+              >
+                «الفاز» هو نوع توصيلة الكهرباء لمبناك:
+                <br />
+                • <strong style={{ color: 'var(--text-primary)' }}>فاز واحد</strong> (220 فولت): توصيلة المنازل العادية، تكفي للأنظمة حتى نحو 6 كيلوواط.
+                <br />
+                • <strong style={{ color: 'var(--text-primary)' }}>3 فاز</strong> (380 فولت): توصيلة المنازل الكبيرة والمحلات والمصانع، للأنظمة الأكبر.
+                <br />
+                تجدها مكتوبة على عدّاد الكهرباء، أو اسأل الكهربائي. إن لم تكن متأكداً اختر «غير متأكد» وسنحدّدها حسب حجم نظامك.
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              {(
+                [
+                  { key: 'single' as const, emoji: '🏠', title: 'فاز واحد', desc: 'منزل عادي — توصيلة 220 فولت' },
+                  { key: 'three' as const, emoji: '🏢', title: '3 فاز', desc: 'منزل كبير / محل — توصيلة 380 فولت' },
+                ] as const
+              ).map(({ key, emoji, title, desc }) => {
+                const isSelected = phaseChoice === key;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setPhaseChoice(key)}
+                    className="rounded-2xl p-5 text-right transition-all duration-200 cursor-pointer"
+                    style={{
+                      background: isSelected ? 'rgba(245,166,35,0.08)' : 'var(--bg-card)',
+                      border: isSelected ? '2px solid var(--solar-gold)' : '2px solid var(--border)',
+                      boxShadow: isSelected ? '0 0 0 3px rgba(245,166,35,0.15)' : undefined,
+                    }}
+                  >
+                    <div className="text-3xl mb-2">{emoji}</div>
+                    <h3 className="font-bold text-lg mb-1" style={{ color: 'var(--text-primary)' }}>{title}</h3>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{desc}</p>
+                    {isSelected && (
+                      <CheckCircle2 className="h-5 w-5 mt-2" style={{ color: 'var(--solar-gold)' }} />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => setPhaseChoice('auto')}
+              className="w-full rounded-xl p-3 mb-6 text-sm font-medium transition-all"
+              style={{
+                background: phaseChoice === 'auto' ? 'rgba(245,166,35,0.08)' : 'var(--bg-card)',
+                border: phaseChoice === 'auto' ? '2px solid var(--solar-gold)' : '1px dashed var(--border)',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              🤔 غير متأكد — حدّدها لي حسب حجم النظام
+            </button>
+
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={() => setScreen('system-select')}>
+                ← رجوع
+              </Button>
+              <Button
+                onClick={() => setScreen('bill-input')}
+                disabled={!phaseChoice}
                 className="text-white font-semibold"
                 style={{ backgroundColor: 'var(--solar-gold)' }}
               >
@@ -435,15 +571,20 @@ export default function SolarCalculator() {
                     <strong style={{ color: 'var(--solar-gold)' }}>
                       {livePreview.step3.toFixed(2)} kW
                       {livePreview.matchedKw
-                        ? ` → نظام ${livePreview.matchedKw} كيلوواط`
+                        ? ` → نظام ${livePreview.matchedKw} كيلوواط (${PHASE_LABEL[livePreview.phase]})`
                         : ' → يحتاج تواصل مباشر'}
                     </strong>
+                    {livePreview.upgraded && (
+                      <span className="block text-xs mt-1" style={{ color: 'var(--solar-gold)' }}>
+                        ⚠️ أكبر من قدرة فاز واحد — سيُقترح نظام 3 فاز
+                      </span>
+                    )}
                   </p>
                 </div>
               )}
             </div>
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setScreen('system-select')}>
+              <Button variant="outline" onClick={() => setScreen('phase-select')}>
                 ← رجوع
               </Button>
               <Button
@@ -519,12 +660,29 @@ export default function SolarCalculator() {
                   className="rounded-2xl p-6 shadow-sm"
                   style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
                 >
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
                     <CheckCircle2 className="h-5 w-5" style={{ color: 'var(--eco-green)' }} />
                     <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
                       تم الحساب — نظام {systemType ? systemTypeLabel[systemType] : ''}
                     </h2>
+                    <span
+                      className="text-xs font-bold px-2.5 py-1 rounded-full"
+                      style={{ background: 'rgba(79,172,254,0.12)', color: 'var(--sky-blue)' }}
+                    >
+                      {PHASE_LABEL[result.phase]}
+                    </span>
                   </div>
+
+                  {/* تنبيه الترقية التلقائية إلى 3 فاز */}
+                  {result.phaseUpgraded && (
+                    <div
+                      className="rounded-xl p-3 mb-4 text-sm leading-relaxed"
+                      style={{ background: 'rgba(245,166,35,0.10)', border: '1px solid rgba(245,166,35,0.35)', color: 'var(--text-primary)' }}
+                    >
+                      ⚠️ حجم نظامك أكبر من قدرة توصيلة «فاز واحد»، لذلك عرضنا لك النظام المناسب على توصيلة <strong>3 فاز</strong>. للتفاصيل تواصل معنا.
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div
                       className="rounded-xl p-4"
@@ -560,6 +718,9 @@ export default function SolarCalculator() {
                       </p>
                       <p className="text-2xl font-bold" style={{ color: 'var(--eco-green)' }}>
                         {result.step4_systemKw} kW
+                      </p>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        {PHASE_LABEL[result.phase]}
                       </p>
                     </div>
                     <div
